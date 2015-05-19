@@ -18,24 +18,8 @@
   border-right: 1px solid #ccc;
   height: 1500px;
 	}
-	.nav-content{margin-left: 190px;width: auto;height: 600px;}
-/*	.nav-bar>.nav-list>li>a{
-		display: block;
-		height: 38px;
-		line-height: 38px;
-		color: #585858;
-		padding-left: 10px;
-	}
-	.nav-bar>.nav-list>li>a:hover{text-decoration: none;color: #1963AA;}
-	.nav-list>li{
-		  display: block;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  border-top: 1px solid #fcfcfc;
-  border-bottom: 1px solid #e5e5e5;
-  position: relative;
-	}*/
+	
+	iframe{margin-left: 190px;}
 </style>
 
 	<div class="nav-bar">
@@ -71,13 +55,17 @@
 			</li>
 			</ul>
 	</div>
-	<div class="nav-content">
-		<?php echo $content?>
-	</div>
+	
+		<iframe  marginheight="0" marginwidth="0" frameborder="0" scrolling="no"  src="<?=Yii::$app->request->baseUrl.'/index.php?r=user'?>"></iframe>
+	
 <script type="text/javascript">
 window.onload=function () {
 	$('#rbac').click(function () {
 		$(this).find('.submenu').toggle();
 	});
+	var iframeW = ($(window).width() - 190).toString()+'px' ;
+	var iframeH = ($(window).height() -110).toString()+'px';
+	$("iframe").css({'width':iframeW,'height':iframeH});
+
 }
 </script>

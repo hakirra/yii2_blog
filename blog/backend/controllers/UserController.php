@@ -14,6 +14,7 @@ use yii\filters\VerbFilter;
  */
 class UserController extends Controller
 {
+	public $layout = 'branch';
     public function behaviors()
     {
         return [
@@ -25,20 +26,32 @@ class UserController extends Controller
             ],
         ];
     }
+	
+	
+	public function actionTake()
+	{
 
+		$userData2 = User::find()->where(['status'=>1,'role'=>0])->all();
+			\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+		return $userData2;
+	}
     /**
      * Lists all user models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UserSearch();
+       /* $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
+        ]);*/
+		$userData = User::find()->where(['status'=>1,'role'=>0])->all();
+//		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+		return $this->render('index',['userData'=>$userData]);
+
     }
 
     /**

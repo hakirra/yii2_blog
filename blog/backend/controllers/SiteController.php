@@ -15,7 +15,7 @@ class SiteController extends Controller
     /**
      * @inheritdoc
      */
-    public $layout = 'main2';
+//  public $layout = 'main2';
     public function behaviors()
     {
         return [
@@ -61,9 +61,9 @@ class SiteController extends Controller
 
     public function actionLogin()
     {
-        if (!\Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+//      if (!\Yii::$app->user->isGuest) {
+//          return $this->goHome();
+//      }
 
         $model = new LoginForm();
 
@@ -76,9 +76,7 @@ class SiteController extends Controller
         }
     }
 	
-	public function actionTest(){
-		echo "kk";		
-	}
+
     public function actionLogout()
     {
         Yii::$app->user->logout();

@@ -1,6 +1,9 @@
 html,
 body {
     height: 100%;
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
 }
 
 a:hover{text-decoration: none;}
@@ -15,6 +18,17 @@ a:hover{text-decoration: none;}
     /*padding: 70px 15px 20px;*/
 }
 .wrap > .custom-container{
-	padding:51px 0 0 0 ;
+	padding:44px 0 0 0 ;
 	
+}
+
+input[type=checkbox]{
+	opacity: 1;
+	width: 16px;
+	height: 16px;
+	position: relative;
+}
+
+.table>tbody > tr > td{
+	vertical-align:middle;
 }

@@ -46,7 +46,7 @@ class ManagerSearch extends Manager
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
+		p($params[ManagerSearch]);
         $this->load($params);
 
         if (!$this->validate()) {

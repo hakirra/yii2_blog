@@ -44,6 +44,17 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+	 public function attributeLabels()
+    {
+        return [
+            'username' => '用户名',
+            'password_hash'=>'密码',
+            'status' => '状态',
+            'email' => '邮箱',
+            'type' => 'Type',
+        ];
+    }
+	
     /**
      * @inheritdoc
      */
@@ -52,6 +63,9 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['username','required','message'=>'用户名不能为空'],
+            ['username','unique','message'=>'该用户名已存在'],
+            ['password_hash','required','message'=>'密码不能为空']
         ];
     }
 
@@ -79,8 +93,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username,$role)
     {
-       return static::findOne(['username' => $username,'role'=>$role]);
-//	   var_dump($test);
+       $usermodel = static::findOne(['username' => $username,'role'=>$role]);
+	   if($usermodel){
+	   		$usermodel->ip_addr = Yii::$app->request->userIP;
+	   		$usermodel->login_time = time();
+			$usermodel->save();		
+	   }
+	   return $usermodel;
     }
 
     /**

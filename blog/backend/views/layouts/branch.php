@@ -14,9 +14,10 @@ AppAsset::register($this);
     <!--<title><?= Html::encode($this->title) ?></title>-->
     <?php $this->head() ?>
 </head>
-<body ng-app='userApp'>
+<body>
     <?php $this->beginBody() ?>
     <div class="wrap">
+  
     	 <?= $content ?>     
     </div>
       <?php $this->endBody() ?>

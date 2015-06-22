@@ -25,11 +25,9 @@ class AppAsset extends AssetBundle
         'css/index.css',
     ];
     public $js = [
-    	'js/app/angular.js',
     	'js/app/common.js',
-    	'js/directives/selectRow.js',
     	'js/app/app.js',
-		
+		'js/app/bootstrap.min.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

@@ -11,5 +11,6 @@ return [
 		 'assignmentTable' => 'auth_assignment',
 		 'itemChildTable' => 'auth_item_child',
 		  ],
+		 
     ],
 ];

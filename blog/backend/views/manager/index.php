@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\search\ManagerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Managers';
+//$this->title = 'Managers';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="manager-index">

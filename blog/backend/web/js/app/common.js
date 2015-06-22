@@ -1,6 +1,6 @@
 ﻿//wuhan code
 Array.prototype.indexOf = function (val) {//判断数组是否存在某个值，如果存在返回该值对应的索引，否则返回-1
-    for (var i = 0; i < this.length; i++) {
+    for (var i = 0; i < this.length; i++) {	
         if(typeof val === 'object' && typeof this[i]==='object'){
              var str1 = JSON.stringify(val);
             var str2 = JSON.stringify(this[i]);

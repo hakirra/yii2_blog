@@ -34,7 +34,7 @@ class ManagerController extends Controller
     {
         $searchModel = new ManagerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

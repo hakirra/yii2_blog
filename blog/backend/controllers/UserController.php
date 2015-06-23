@@ -4,14 +4,11 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\user;
-use backend\models\search\UserSearch;
 use yii\web\Controller;
-//use yii\rest\ActiveController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
 use yii\data\Sort;
-use yii\helpers\Inflector;
 /**
  * UserController implements the CRUD actions for user model.
  */
@@ -44,9 +41,7 @@ class UserController extends Controller
      * @return mixed
      */
     public function actionIndex($username=null)
-    {
-    		   
-	  
+    {		    
 		$sort = new Sort([
 			'attributes'=>[
 				'id'=>[

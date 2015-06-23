@@ -1,0 +1,73 @@
+2015-05-06 08:06:30 [-][-][-][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'You should configure "authManager" component to use database before executing this migration.' in E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\rbac\migrations\m140506_102106_rbac_init.php:28
+Stack trace:
+#0 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\rbac\migrations\m140506_102106_rbac_init.php(35): m140506_102106_rbac_init->getAuthManager()
+#1 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\console\controllers\BaseMigrateController.php(492): m140506_102106_rbac_init->up()
+#2 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\console\controllers\BaseMigrateController.php(129): yii\console\controllers\BaseMigrateController->migrateUp('m140506_102106_...')
+#3 [internal function]: yii\console\controllers\BaseMigrateController->actionUp(0)
+#4 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\base\InlineAction.php(55): call_user_func_array(Array, Array)
+#5 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\base\Controller.php(151): yii\base\InlineAction->runWithParams(Array)
+#6 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\console\Controller.php(91): yii\base\Controller->runAction('', Array)
+#7 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\base\Module.php(455): yii\console\Controller->runAction('', Array)
+#8 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\console\Application.php(161): yii\base\Module->runAction('migrate', Array)
+#9 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\console\Application.php(137): yii\console\Application->runAction('migrate', Array)
+#10 E:\Visual-AMP-x64\www\blog\blog\vendor\yiisoft\yii2\base\Application.php(375): yii\console\Application->handleRequest(Object(yii\console\Request))
+#11 E:\Visual-AMP-x64\www\blog\blog\yii(31): yii\base\Application->run()
+#12 {main}
+2015-05-06 08:06:20 [-][-][-][info][application] $_SERVER = [
+    'ALLUSERSPROFILE' => 'C:\\ProgramData'
+    'APPDATA' => 'C:\\Users\\Administrator\\AppData\\Roaming'
+    'CLASSPATH' => '.;C:\\Program Files\\Java\\jdk1.7.0_75\\lib\\tools.jar;C:\\Program Files\\Java\\jdk1.7.0_75\\lib\\dt.jar;C:\\Program Files\\Java\\jdk1.7.0_75\\bin;'
+    'CommonProgramFiles' => 'C:\\Program Files\\Common Files'
+    'CommonProgramFiles(x86)' => 'C:\\Program Files (x86)\\Common Files'
+    'CommonProgramW6432' => 'C:\\Program Files\\Common Files'
+    'COMPUTERNAME' => 'PC201407211550'
+    'ComSpec' => 'C:\\Windows\\system32\\cmd.exe'
+    'DEVMGR_SHOW_DETAILS' => '1'
+    'FP_NO_HOST_CHECK' => 'NO'
+    'HOMEDRIVE' => 'C:'
+    'HOMEPATH' => '\\Users\\Administrator'
+    'JAVA_HOME' => 'C:\\Program Files\\Java\\jdk1.7.0_75'
+    'LOCALAPPDATA' => 'C:\\Users\\Administrator\\AppData\\Local'
+    'LOGONSERVER' => '\\\\PC201407211550'
+    'NUMBER_OF_PROCESSORS' => '2'
+    'OS' => 'Windows_NT'
+    'Path' => 'C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Java\\jdk1.7.0_75\\bin;E:\\Visual-AMP-x64\\Bin\\PHP\\php-5.6.3-nts-Win32-VC11-x64;E:\\Visual-AMP-x64\\Bin\\MySQL\\bin;C:\\ProgramData\\ComposerSetup\\bin;D:\\BaiduYunDownload\\android-sdk_r24.1.2-windows\\android-sdk-windows\\tools;'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'PHP_COMMAND' => 'php.exe'
+    'PROCESSOR_ARCHITECTURE' => 'AMD64'
+    'PROCESSOR_IDENTIFIER' => 'Intel64 Family 6 Model 58 Stepping 9, GenuineIntel'
+    'PROCESSOR_LEVEL' => '6'
+    'PROCESSOR_REVISION' => '3a09'
+    'ProgramData' => 'C:\\ProgramData'
+    'ProgramFiles' => 'C:\\Program Files'
+    'ProgramFiles(x86)' => 'C:\\Program Files (x86)'
+    'ProgramW6432' => 'C:\\Program Files'
+    'PROMPT' => '$P$G'
+    'PSModulePath' => 'C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\Modules\\'
+    'PUBLIC' => 'C:\\Users\\Public'
+    'SESSIONNAME' => 'Console'
+    'SystemDrive' => 'C:'
+    'SystemRoot' => 'C:\\Windows'
+    'TEMP' => 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp'
+    'TMP' => 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp'
+    'USERDOMAIN' => 'PC201407211550'
+    'USERNAME' => 'Administrator'
+    'USERPROFILE' => 'C:\\Users\\Administrator'
+    'windir' => 'C:\\Windows'
+    'windows_tracing_flags' => '3'
+    'windows_tracing_logfile' => 'C:\\BVTBin\\Tests\\installpackage\\csilogfile.log'
+    'YII_PATH' => 'E:\\Visual-AMP-x64\\www\\blog\\blog\\'
+    'PHP_SELF' => 'E:\\Visual-AMP-x64\\www\\blog\\blog\\yii'
+    'SCRIPT_NAME' => 'E:\\Visual-AMP-x64\\www\\blog\\blog\\yii'
+    'SCRIPT_FILENAME' => 'E:\\Visual-AMP-x64\\www\\blog\\blog\\yii'
+    'PATH_TRANSLATED' => 'E:\\Visual-AMP-x64\\www\\blog\\blog\\yii'
+    'DOCUMENT_ROOT' => ''
+    'REQUEST_TIME_FLOAT' => 1430899580.5884
+    'REQUEST_TIME' => 1430899580
+    'argv' => [
+        0 => 'E:\\Visual-AMP-x64\\www\\blog\\blog\\yii'
+        1 => 'migrate'
+        2 => '--migrationPath=@yii/rbac/migrations/'
+    ]
+    'argc' => 3
+]

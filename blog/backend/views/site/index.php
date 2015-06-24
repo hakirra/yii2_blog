@@ -24,17 +24,17 @@
 
 	<div class="nav-bar">
 			<ul class="nav nav-list">
-					<li class="active">
-						<a href="index.html">
+					<li class="active" data-ctrl = "user">
+						<a href="javascript:void(0)">
 							<span class="mui-icon iconfont icon-user_set">用户管理</span>
 						</a>
 					</li>
 
-			<li><a href="#" ><span class="mui-icon iconfont icon-lanmu">栏目管理</span></a></li>
-			<li><a href="#" ><span class="mui-icon iconfont icon-article">文章管理</span></a></li>
-			<li><a href="#" ><span class="mui-icon iconfont icon-pinglun">评论管理</span></a></li>
-			<li id="rbac">
-				<a href="#" class="dropdown-toggle">
+			<li data-ctrl = "category"><a href="javascript:void(0)" ><span class="mui-icon iconfont icon-lanmu">栏目管理</span></a></li>
+			<li data-ctrl = "article"><a href="javascript:void(0)"><span class="mui-icon iconfont icon-article">文章管理</span></a></li>
+			<li data-ctrl = "comment"><a href="javascript:void(0)" ><span class="mui-icon iconfont icon-pinglun">评论管理</span></a></li>
+			<li id="rbac" data-ctrl = "rbac">
+				<a href="javascript:void(0)" class="dropdown-toggle">
 					<span class="mui-icon iconfont icon-rbac">RBAC管理</span>
 					<b class="arrow icon-angle-down"></b>
 				</a>
@@ -56,7 +56,7 @@
 			</ul>
 	</div>
 	
-		<iframe  marginheight="0" marginwidth="0" frameborder="0" scrolling="no"  src="<?=Yii::$app->request->baseUrl.'/index.php?r=user'?>"></iframe>
+		<iframe  id="iframe" marginwidth="0" frameborder="0" scrolling="no"  src="<?=Yii::$app->request->baseUrl.'/index.php?r=user'?>"></iframe>
 	
 <script type="text/javascript">
 window.onload=function () {
@@ -66,6 +66,10 @@ window.onload=function () {
 	var iframeW = ($(window).width() - 190).toString()+'px' ;
 	var iframeH = ($(window).height() -110).toString()+'px';
 	$("iframe").css({'width':iframeW,'height':iframeH});
-
+	
+	$("ul.nav-list>li").click(function () {
+		var ctrl = $(this).attr('data-ctrl');
+		$("#iframe").attr('src',"<?=Yii::$app->request->baseUrl.'/index.php?r='?>"+ctrl);
+	});
 }
 </script>

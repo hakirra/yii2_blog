@@ -15,7 +15,7 @@ use yii\data\Sort;
 class UserController extends Controller
 {
 	public $layout = 'branch';
-	
+	const PAGESIZE = 3;
     public function behaviors()
     {
         return [
@@ -29,12 +29,20 @@ class UserController extends Controller
     }
 	
 
-	public function actionTake()
+	/**
+	 *与前端ajax交互， 给前端提供数据
+	 */
+	public function actionTake($offset)
 	{
-
-		$userData2 = User::findBySql("select id,username,email,status,login_time,ip_addr from user where status=1 && role=0")->all();
+		$query = User::find()->select("id,username,email,status,login_time,ip_addr")->where(['role'=>0]);
+		$countQuery = clone $query;//必须，不然分页显示不出来
+		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
+		 $models = $query->offset($offset)
+        ->limit($pages->limit)
+        ->all();
+		
 		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-		return $userData2;
+		return $models;
 	}
     /**
      * Lists all user models.
@@ -88,7 +96,7 @@ class UserController extends Controller
 			$query = User::find()->where(['role'=>0])->orderBy($sort->orders);
 		}
 		$countQuery = clone $query;//必须，不然分页显示不出来
-		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => 3]);
+		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
 		 $models = $query->offset($pages->offset)
         ->limit($pages->limit)
         ->all();

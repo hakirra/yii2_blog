@@ -64,10 +64,12 @@ window.onload=function () {
 		$(this).find('.submenu').toggle();
 	});
 	var iframeW = ($(window).width() - 190).toString()+'px' ;
-	var iframeH = ($(window).height() -110).toString()+'px';
-	$("iframe").css({'width':iframeW,'height':iframeH});
-	
+//	var iframeH = ($(window).height() -110).toString()+'px';
+//	$("iframe").css({'width':iframeW,'height':iframeH});
+	$("iframe").css({'width':iframeW,'height':1300});
 	$("ul.nav-list>li").click(function () {
+		$("ul.nav-list>li").removeClass('active');
+		$(this).addClass('active');
 		var ctrl = $(this).attr('data-ctrl');
 		$("#iframe").attr('src',"<?=Yii::$app->request->baseUrl.'/index.php?r='?>"+ctrl);
 	});

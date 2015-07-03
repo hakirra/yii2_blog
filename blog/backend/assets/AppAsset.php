@@ -26,7 +26,6 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
     	'js/app/common.js',
-    	'js/app/app.js',
 		'js/app/bootstrap.min.js',
     ];
     public $depends = [

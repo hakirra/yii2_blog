@@ -7,7 +7,7 @@ use Yii;
 /**
  * This is the model class for table "{{%category}}".
  *
- * @property string $id
+ * @property string $cid
  * @property string $name
  * @property string $slug
  */
@@ -38,7 +38,7 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'cid' => 'ID',
             'name' => '分类名称',
             'slug' => '别名',
         ];

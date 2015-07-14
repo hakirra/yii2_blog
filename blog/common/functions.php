@@ -75,3 +75,5 @@ function ShowMsg($msg, $gourl, $onlymsg=0, $limittime=0)
     }
     echo $msg;
 }
+
+

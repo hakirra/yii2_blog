@@ -14,11 +14,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form2', [
-        'model' => $model,
-        'catetags'=>$catetags,
-        'catenodes'=>$catenodes,
-        'listdata'=>$listdata
+    <?= $this->render('_form', [
+        'models' => $models,
+        'catetags'=>$catetags
     ]) ?>
 
 </div>

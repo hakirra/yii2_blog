@@ -66,7 +66,7 @@ window.onload=function () {
 	var iframeW = ($(window).width() - 190).toString()+'px' ;
 //	var iframeH = ($(window).height() -110).toString()+'px';
 //	$("iframe").css({'width':iframeW,'height':iframeH});
-	$("iframe").css({'width':iframeW,'height':1300});
+	$("iframe").css({'width':iframeW,'height':1800});
 	$("ul.nav-list>li").click(function () {
 		$("ul.nav-list>li").removeClass('active');
 		$(this).addClass('active');

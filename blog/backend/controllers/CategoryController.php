@@ -37,9 +37,9 @@ class CategoryController extends \yii\web\Controller
     {
     	$sort = new Sort([
 			'attributes'=>[
-				'id'=>[
-					'asc'=>['id'=>SORT_ASC],
-					'desc'=>['id'=>SORT_DESC],
+				'cid'=>[
+					'asc'=>['cid'=>SORT_ASC],
+					'desc'=>['cid'=>SORT_DESC],
 					'default'=>SORT_ASC,
 					'label' =>'ID',
 				],
@@ -82,37 +82,39 @@ class CategoryController extends \yii\web\Controller
 	 */
 	public function actionCreate()
     {
-    	$catenodes =Viewcategorytags::find()->where(['catetags'=>'category'])->all(); 
 		
-		$listdata=ArrayHelper::map($catenodes,'cate_id','name');
-	
-      /*  $model = new category();
-		$catetags = new catetags();*/
+		$catetags = $this->getTree(0);
+//		$catetags=ArrayHelper::map($catetags,'cate_id','name');
 		 $models['cate'] = new category();
 		$models['tags'] = new catetags();
 		if(isset($_POST['submit'])){
 			$models['cate']->name =$_POST['Category']['name'];
 			$models['cate']->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
-			$models['tags']->pid = $_POST['Category']['id']?$_POST['Category']['id']:0;
+			$models['tags']->pid = $_POST['CateTags']['cate_id']?$_POST['CateTags']['cate_id']:0;
 			$models['tags']->catetags = 'category';
 			$models['tags']->total = 0;
+			if($models['tags']->pid==0){//等于0表示未选择父节点，新添加的为一级分类
+				$models['tags']->level = 0;
+			}else{
+				$one = Viewcategorytags::find()->where(['cid'=>$models['tags']->pid])->asArray()->all();
+				$models['tags']->level = $one[0]['level']+1;
+			}
+			
 			
 			if ($models['cate']->save()) {
 				$models['tags']->cate_id = $models['cate']->attributes['cid'];
 				if($models['tags']->save())
-				ShowMsg("数据添加成功", dirname(Yii::$app->request->absoluteUrl).'/index.php?r=Category/index');
+				ShowMsg("数据添加成功", dirname(Yii::$app->request->absoluteUrl).'/index.php?r=category/index');
 	        } else {
 	            return $this->render('create', [
-	                'model' => $models,
+	                'models' => $models,
 	                'catetags' =>$catetags,
-	                'listdata'=>$listdata
 	            ]);
 	        }
 		}else {
             return $this->render('create', [
-                'model' => $models,
+                'models' => $models,
                 'catetags'=>$catetags,
-                'listdata'=>$listdata
             ]);
         }
         
@@ -127,29 +129,37 @@ class CategoryController extends \yii\web\Controller
      */
     public function actionUpdate($id)
     {
-    	$catenodes =Viewcategorytags::find()->where(['catetags'=>'category'])->all(); 
+    	$models = $this->findModel($id);
+    	$catetags = $this->getTree(0,$models['tags']['level']); 
 		
-		$listdata=ArrayHelper::map($catenodes,'cate_id','name');
-        $model = $this->findModel($id);
-		if(isset($_POST['submit']) && $model['cate']->validate() && $model['tags']->validate()){
+//		$listdata=ArrayHelper::map($catetags,'cate_id','name');
+        
+		if(isset($_POST['submit']) && $models['cate']->validate() && $models['tags']->validate()){
+			
 			$models['cate']->name =$_POST['Category']['name'];
 			$models['cate']->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
-			$models['tags']->pid = $_POST['Category']['id']?$_POST['Category']['id']:0;
+			$models['tags']->pid = $_POST['CateTags']['cate_id']?$_POST['CateTags']['cate_id']:0;
 			$models['tags']->catetags = 'category';
 			$models['tags']->total = 0;
-			if($model->save()){
-				ShowMsg("数据更新成功", dirname(Yii::$app->request->absoluteUrl).'/index.php?r=category/index');
-//				 return $this->redirect(['index']);
+			if($models['tags']->pid==0){//等于0表示未选择父节点，新添加的为一级分类
+				$models['tags']->level = 0;
+			}else{
+				$one = Viewcategorytags::find()->where(['cid'=>$models['tags']->pid])->asArray()->all();
+				$models['tags']->level = $one[0]['level']+1;
+			}
+			if($models['cate']->save() && $models['tags']->save()){
+				
+				ShowMsg("数据更新成功", dirname(Yii::$app->request->absoluteUrl));
 			}else{
 				return $this->render('update', [
-                'model' => $model,
-                'listdata'=>$listdata
+                'models' => $models,
+                'catetags'=>$catetags
            		 ]);
 			}		
 		}else{
 			return $this->render('update', [
-                'model' => $model,
-                'listdata'=>$listdata
+                'models' => $models,
+                'catetags'=>$catetags
             ]);
 		}
     }
@@ -170,5 +180,22 @@ class CategoryController extends \yii\web\Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+	/**
+	 * 获取分类节点树
+	 */
+	public function getTree($id=0,$level=0)
+	{
+		$rel = Viewcategorytags::find()->where(['catetags'=>'category','pid'=>$id])->asArray()->all(); 
+		$arr = array();
+		if($rel){		
+			foreach($rel as $val){
+				$val['level']=$level;
+				$arr[count($arr)] = $val;
+				$sub = $this->getTree($val['cid'],$level+1);
+				 if(is_array($sub)) $arr = array_merge($arr,$sub);
+			}
+		}
+		return $arr;
+	}
 
 }

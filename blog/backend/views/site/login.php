@@ -14,15 +14,14 @@ use yii\bootstrap\ActiveForm;
 <body style="overflow:hidden;">
     <div style="height:450px;width:100%;background:#008EAD"></div>
     <div style="background:white;width:500px;height:220px;position:absolute;top:300px;left:450px;">
-    	<!--<form action="/backend/web/index.php?r=site/login" method="post">	-->
+    
     		<?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
     	
-        <input type="text" name="LoginForm[username]" value="" placeholder="用户名">   
-        <input type="password" name="LoginForm[password]" value="" placeholder="密码"> 
-        <!--<input type="hidden" name="LoginForm[rememberMe]" value="0">-->
-        <!--<?= $form->field($model, 'rememberMe')->checkbox() ?>-->
+        <input type="text" name="LoginForm[username]"  placeholder="用户名" autocomplete='off'>   
+        <input type="password" name="LoginForm[password]" placeholder="密码" autocomplete='off'> 
+        
         <input type="submit" name="LoginForm[submit]" value="登录" style="padding:10px 74px;color:white;background:#31B000;border:none">
-        <!--</form>--> 
+        
          <?php ActiveForm::end(); ?>
     </div>
 

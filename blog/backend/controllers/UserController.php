@@ -127,6 +127,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new user();
+		$model->status=1;
 		if(isset($_POST['submit'])){	
 			$model->role = 0;
 			$model->email =$_POST['User']['email'];
@@ -165,7 +166,8 @@ class UserController extends Controller
 			$model->email = $post['User']['email'];
 			$model->status = $post['User']['status'];
 			if($model->save()){
-				ShowMsg("数据更新成功", dirname(Yii::$app->request->absoluteUrl).'/index.php?r=user/index');
+//				echo dirname(Yii::$app->request->absoluteUrl);exit;
+				ShowMsg("数据更新成功", dirname(Yii::$app->request->absoluteUrl));
 //				 return $this->redirect(['index']);
 			}else{
 				return $this->render('update', [

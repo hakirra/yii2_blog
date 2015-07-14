@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;*/
 			<tr>
 				<th style="width: 15px;"></th>
 				<th style="width: 20px;"><input type="checkbox" id="selectAll"></th>
-				<th><?= $sort->link('id')?></th>
+				<th><?= $sort->link('cid')?></th>
 				<th><?= $sort->link('name')?></th>
 				<th><?= $sort->link('slug')?></th>
 				<th><?= $sort->link('total')?></th>

@@ -25,17 +25,17 @@ $this->params['breadcrumbs'][] = $this->title;*/
         <input id='input-search' class="form-control"  placeholder="请输入名称或别名" style='display:inline-block;width:200px;'>
         <a id="search" class="btn btn-info" href="#">查询</a>
     </div>
-    
+  
 	<table class="table table-bordered">
 		<thead>
 			<tr>
 				<th style="width: 15px;"></th>
 				<th style="width: 20px;"><input type="checkbox" id="selectAll"></th>
-				<th><?= $sort->link('cid')?></th>
+				
 				<th><?= $sort->link('name')?></th>
 				<th><?= $sort->link('slug')?></th>
 				<th><?= $sort->link('total')?></th>
-				
+				<th><?= $sort->link('pid')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -44,11 +44,24 @@ $this->params['breadcrumbs'][] = $this->title;*/
 			
 			<tr onclick="selectRow(<?= $rowdata[id]?>)">
 				<td><?= ($pagination->page)*($pagination->defaultPageSize)+($key+1)?></td>
-				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata[id]?>)"></td>
-				<td><?= $rowdata[id]?></td>
+				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['id']?>)"></td>
+				
 				<td><?= $rowdata['name']?></td>
 				<td><?= $rowdata['slug']?></td>	
 				<td><?= $rowdata['total']?></td>
+				<?php 
+					
+						if($rowdata['pid']==0){
+							echo "<td>无</td>";
+						}else{
+						
+							for($i=0;$i<count($models2);$i++){
+								if($models2[$i]['cid']==$rowdata['pid'])
+									echo "<td>{$models2[$i]['name']}</td>";
+							}
+						}
+					
+				?>
 				
 			</tr>
 			<?php endforeach;?>

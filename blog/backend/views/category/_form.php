@@ -19,7 +19,8 @@ use yii\widgets\ActiveForm;
 		
 		<label class="control-label" >父节点</label>
 	<select id="catetags-cate_id" class="form-control" name="CateTags[cate_id]">
-		<!--<option value=""><?=$models['tags']['cate_id']?></option>-->
+		<option value="">无</option>
+		
 		<?php 
 			foreach($catetags as $cate){
 				if($cate['cid']==$models['tags']['pid']){
@@ -27,9 +28,9 @@ use yii\widgets\ActiveForm;
 				}else{
 					$selected = '';
 				}
-				
-				if($cate['pid']!=$models['tags']['cate_id']&&$cate['cid']!=$models['tags']['cate_id']){
-					$strpad = str_pad('', intval($cate['pid'])*12,"&nbsp;",STR_PAD_LEFT);
+			if($cate['pid']!=$models['tags']['cate_id']&&$cate['cid']!=$models['tags']['cate_id']){
+					
+					$strpad = str_pad('', intval($cate['level'])*12,"&nbsp;",STR_PAD_LEFT);
 					echo "<option value='{$cate[cate_id]}' $selected>{$strpad}{$cate['name']}</option>";
 				}
 				

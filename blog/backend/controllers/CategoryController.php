@@ -59,21 +59,31 @@ class CategoryController extends \yii\web\Controller
 					'asc'=>['total'=>SORT_ASC],
 					'desc'=>['total'=>SORT_DESC],
 					'default'=>SORT_ASC,
-					'total' =>'总数',
+					'label' =>'总数',
+				],
+				'pid'=>[
+					'asc'=>['pid'=>SORT_ASC],
+					'desc'=>['pid'=>SORT_DESC],
+					'default'=>SORT_ASC,
+					'label' =>'父分类',
 				]
 			]
 		]);
 		if(isset($name)){
-			$query = Viewcategorytags::find()->where("name like '%$name%' or slug like '%$name%'")->orderBy($sort->orders);		
+			$query = Viewcategorytags::find()->where("name like '%$name%' or slug like '%$name%'")->andWhere(['catetags'=>'category'])->orderBy($sort->orders);		
 		}else{
-			$query = Viewcategorytags::find()->orderBy($sort->orders);
+			$query = Viewcategorytags::find()->where(['catetags'=>'category'])->orderBy($sort->orders);
 		}
 		$countQuery = clone $query;//必须，不然分页显示不出来
 		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
 		 $models = $query->offset($pages->offset)
         ->limit($pages->limit)
+		->asArray()
         ->all();
-		return $this->render('index',['pagination'=>$pages,'models'=>$models,'sort'=>$sort]);
+		 $models2 =Viewcategorytags::find()->where(['catetags'=>'category'])->asArray()
+        ->all();
+//		p($models);exit;
+		return $this->render('index',['pagination'=>$pages,'models'=>$models,'models2'=>$models2,'sort'=>$sort]);
         
     }
 
@@ -164,6 +174,17 @@ class CategoryController extends \yii\web\Controller
 		}
     }
 	
+	
+	public function actionDelete($id)
+    {
+    	$ids = explode(',', $id);
+		$num = Category::deleteAll(['cid'=>$ids]);
+		$num2 = Catetags::deleteAll(['id'=>$ids]);
+		if($num>0){
+			ShowMsg("数据删除成功", dirname(Yii::$app->request->absoluteUrl).'/index');
+		}
+        
+    }
 	  /**
      * Finds the user model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -189,9 +210,9 @@ class CategoryController extends \yii\web\Controller
 		$arr = array();
 		if($rel){		
 			foreach($rel as $val){
-				$val['level']=$level;
+//				$val['level']=$level;
 				$arr[count($arr)] = $val;
-				$sub = $this->getTree($val['cid'],$level+1);
+				$sub = $this->getTree($val['cid']);
 				 if(is_array($sub)) $arr = array_merge($arr,$sub);
 			}
 		}

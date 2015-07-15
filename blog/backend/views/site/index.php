@@ -31,6 +31,7 @@
 					</li>
 
 			<li data-ctrl = "category"><a href="javascript:void(0)" ><span class="mui-icon iconfont icon-lanmu">栏目管理</span></a></li>
+				<li data-ctrl = "tags"><a href="javascript:void(0)" ><span class="mui-icon iconfont icon-lanmu">标签管理</span></a></li>
 			<li data-ctrl = "article"><a href="javascript:void(0)"><span class="mui-icon iconfont icon-article">文章管理</span></a></li>
 			<li data-ctrl = "comment"><a href="javascript:void(0)" ><span class="mui-icon iconfont icon-pinglun">评论管理</span></a></li>
 			<li id="rbac" data-ctrl = "rbac">

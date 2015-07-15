@@ -53,6 +53,7 @@ class ViewCategoryTags extends \yii\db\ActiveRecord
             'catetags' => 'Catetags',
             'pid' => 'Pid',
             'total' => 'Total',
+            'level' => 'Level',
         ];
     }
 }

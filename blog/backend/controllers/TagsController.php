@@ -4,14 +4,11 @@ namespace backend\controllers;
 use Yii;
 use yii\db\ActiveQuery;
 use app\models\category;
-use app\models\catetags;
-use app\models\viewcategorytags;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
 use yii\data\Sort;
-use  yii\helpers\ArrayHelper;
 class TagsController extends \yii\web\Controller
 {
 	public $layout = 'branch';
@@ -22,10 +19,11 @@ class TagsController extends \yii\web\Controller
 	 */
 	public function actionTake($offset)
 	{
-		$query = Viewcategorytags::find()->select("id,cate_id,name,slug,pid,total");
+		$query = Category::find()->select("category_id,name,slug,pid,total");
 		$countQuery = clone $query;//必须，不然分页显示不出来
 		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
 		 $models = $query->offset($offset)
+		 ->where(['catetags'=>'tags'])
         ->limit($pages->limit)
         ->all();
 		
@@ -55,13 +53,12 @@ class TagsController extends \yii\web\Controller
 					'default'=>SORT_ASC,
 					'label' =>'总数',
 				]
-				
 			]
 		]);
 		if(isset($name)){
-			$query = Viewcategorytags::find()->where("name like '%$name%' or slug like '%$name%'")->andWhere(['catetags'=>'tags'])->orderBy($sort->orders);		
+			$query = Category::find()->where("name like '%$name%' or slug like '%$name%'")->andWhere(['catetags'=>'tags'])->orderBy($sort->orders);		
 		}else{
-			$query = Viewcategorytags::find()->where(['catetags'=>'tags'])->orderBy($sort->orders);
+			$query = Category::find()->where(['catetags'=>'tags'])->orderBy($sort->orders);
 		}
 		$countQuery = clone $query;//必须，不然分页显示不出来
 		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
@@ -69,41 +66,38 @@ class TagsController extends \yii\web\Controller
         ->limit($pages->limit)
 		->asArray()
         ->all();
-//		p($models);exit;
+
 		return $this->render('index',['pagination'=>$pages,'models'=>$models,'sort'=>$sort]);
         
     }
 
 	/**
-	 * 新增分类方法
+	 * 新增标签方法
 	 */
 	public function actionCreate()
     {
-		
-	
-//		$catetags=ArrayHelper::map($catetags,'cate_id','name');
-		 $models['cate'] = new category();
-		$models['tags'] = new catetags();
+
+		 $models = new category();
 		if(isset($_POST['submit'])){
-			$models['cate']->name =$_POST['Category']['name'];
-			$models['cate']->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
-			$models['tags']->pid = 0;
-			$models['tags']->catetags = 'tags';
-			$models['tags']->total = 0;
-			$models['tags']->level = 0;
-			
-			if ($models['cate']->save()) {
-				$models['tags']->cate_id = $models['cate']->attributes['cid'];
-				if($models['tags']->save())
+			$models->name =$_POST['Category']['name'];
+			$models->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
+
+			$models->catetags = 'tags';
+
+			if ($models->save()) {
 				ShowMsg("数据添加成功", dirname(Yii::$app->request->absoluteUrl).'/index.php?r=tags/index');
 	        } else {
+	        	$category = $this->getTree();
 	            return $this->render('create', [
-	                'models' => $models
+	                'models' => $models,
+	                'category' =>$category,
 	            ]);
 	        }
 		}else {
+			$catetags = $this->getTree();
             return $this->render('create', [
-                'models' => $models
+                'models' => $models,
+                'catetags'=>$catetags,
             ]);
         }
         
@@ -119,27 +113,28 @@ class TagsController extends \yii\web\Controller
     public function actionUpdate($id)
     {
     	$models = $this->findModel($id);
-    	
+    	$catetags = $this->getTree(); 
 		
-//		$listdata=ArrayHelper::map($catetags,'cate_id','name');
+//		$listdata=ArrayHelper::map($Category,'category_id','name');
         
-		if(isset($_POST['submit']) && $models['cate']->validate() && $models['tags']->validate()){
+		if(isset($_POST['submit']) && $models->validate()){
 			
-			$models['cate']->name =$_POST['Category']['name'];
-			$models['cate']->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
-			
-		
-			if($models['cate']->save() && $models['tags']->save()){
-				
+			$models->name =$_POST['Category']['name'];
+			$models->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
+			$models->catetags = 'tags';
+
+			if($models->save()){		
 				ShowMsg("数据更新成功", dirname(Yii::$app->request->absoluteUrl));
 			}else{
 				return $this->render('update', [
-                'models' => $models      
+                'models' => $models,
+                'catetags'=>$catetags
            		 ]);
 			}		
 		}else{
 			return $this->render('update', [
-                'models' => $models
+                'models' => $models,
+                'catetags'=>$catetags
             ]);
 		}
     }
@@ -148,8 +143,7 @@ class TagsController extends \yii\web\Controller
 	public function actionDelete($id)
     {
     	$ids = explode(',', $id);
-		$num = Category::deleteAll(['cid'=>$ids]);
-		$num2 = Catetags::deleteAll(['id'=>$ids]);
+		$num = Category::deleteAll(['category_id'=>$ids]);
 		if($num>0){
 			ShowMsg("数据删除成功", dirname(Yii::$app->request->absoluteUrl).'/index');
 		}
@@ -164,13 +158,28 @@ class TagsController extends \yii\web\Controller
      */
     protected function findModel($id)
     {
-    	$models =[];
-        if (($models['cate'] = Category::findOne($id)) !== null && ($models['tags'] =Catetags::findOne($id)) !== null){
+    	
+        if (($models = Category::findOne($id)) !== null){
             return $models;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
+	/**
+	 * 获取分类节点树
+	 */
+	public function getTree($id=0)
+	{
+		$rel = Category::find()->where(['catetags'=>'category','pid'=>$id])->asArray()->all(); 
+		$arr = array();
+		if($rel){		
+			foreach($rel as $val){
+				$arr[count($arr)] = $val;
+				$sub = $this->getTree($val['category_id']);
+				 if(is_array($sub)) $arr = array_merge($arr,$sub);
+			}
+		}
+		return $arr;
+	}
 
 }

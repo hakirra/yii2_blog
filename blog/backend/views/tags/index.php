@@ -42,9 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;*/
 			
 			<?php foreach($models as $key=>$rowdata):?>
 			
-			<tr onclick="selectRow(<?= $rowdata[id]?>)">
+			<tr onclick="selectRow(<?= $rowdata['category_id']?>)">
 				<td><?= ($pagination->page)*($pagination->defaultPageSize)+($key+1)?></td>
-				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['id']?>)"></td>
+				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['category_id']?>)"></td>
 			
 				<td><?= $rowdata['name']?></td>
 				<td><?= $rowdata['slug']?></td>	
@@ -82,18 +82,18 @@ function selectRow(id) {
 						async:false,
 						success:function (data) {
 							if(data instanceof Array)
-								ids = getSelectedIds(data);		
+								ids = getSelectedIds(data,'category_id');		
 						}
 					});
 					
-				$(":checkbox").each(function (i) {
+				$(":checkbox").each(function () {
 					$(this).prop('checked',true);
 					$("tbody>tr").addClass('info');
 				});
 				isAll = true;
 			}else{
 				ids.length = 0;
-				$(":checkbox").each(function (i) {
+				$(":checkbox").each(function () {
 					$(this).prop('checked',false);
 					$("tbody>tr").removeClass('info');
 				});

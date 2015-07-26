@@ -16,7 +16,7 @@
   z-index: -1;
   background-color: #f2f2f2;
   border-right: 1px solid #ccc;
-  height: 1500px;
+  height: 1800px;
 	}
 	
 	iframe{margin-left: 190px;}

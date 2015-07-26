@@ -1,5 +1,6 @@
 <?php
 use yii\bootstrap\ActiveForm;
+use yii\captcha\Captcha;
 ?>
 <!doctype html>
 <html lang="en">
@@ -19,7 +20,7 @@ use yii\bootstrap\ActiveForm;
     	
         <input type="text" name="LoginForm[username]"  placeholder="用户名" autocomplete='off'>   
         <input type="password" name="LoginForm[password]" placeholder="密码" autocomplete='off'> 
-        
+
         <input type="submit" name="LoginForm[submit]" value="登录" style="padding:10px 74px;color:white;background:#31B000;border:none">
         
          <?php ActiveForm::end(); ?>

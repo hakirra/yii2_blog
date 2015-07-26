@@ -7,11 +7,15 @@ use Yii;
 /**
  * This is the model class for table "{{%category}}".
  *
- * @property string $cid
+ * @property string $category_id
  * @property string $name
  * @property string $slug
+ * @property string $catetags
+ * @property string $pid
+ * @property string $level
+ * @property string $total
  */
-class Category extends \yii\db\ActiveRecord 
+class Category extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -27,8 +31,10 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'slug'], 'string', 'max' => 255],
-            [['name'],'required']
+            [['pid', 'level', 'total'], 'integer'],
+            [['name', 'slug'], 'string', 'max' => 200],
+            [['catetags'], 'string', 'max' => 20],
+            ['name','required','message'=>'名称不能为空']
         ];
     }
 
@@ -38,9 +44,19 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'cid' => 'ID',
-            'name' => '分类名称',
-            'slug' => '别名',
+            'category_id' => 'Category ID',
+            'name' => 'Name',
+            'slug' => 'Slug',
+            'catetags' => 'Catetags',
+            'pid' => 'Pid',
+            'level' => 'Level',
+            'total' => 'Total',
         ];
     }
+	
+	public function getArticle()
+	{
+		return $this->hasMany(Category::className(),['category_id'=>'c_id'])
+					->viaTable('article_category',['a_id'=>'article_id']);
+	}
 }

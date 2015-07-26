@@ -27,6 +27,9 @@ return [
                 ],
             ],
         ],
+        'cache'=>[
+        	'class'=>'yii\caching\MemCache',
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

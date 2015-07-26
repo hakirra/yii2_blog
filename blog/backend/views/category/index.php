@@ -42,9 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;*/
 			
 			<?php foreach($models as $key=>$rowdata):?>
 			
-			<tr onclick="selectRow(<?= $rowdata[id]?>)">
+			<tr onclick="selectRow(<?= $rowdata[category_id]?>)">
 				<td><?= ($pagination->page)*($pagination->defaultPageSize)+($key+1)?></td>
-				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['id']?>)"></td>
+				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['category_id']?>)"></td>
 				
 				<td><?= $rowdata['name']?></td>
 				<td><?= $rowdata['slug']?></td>	
@@ -54,9 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;*/
 						if($rowdata['pid']==0){
 							echo "<td>无</td>";
 						}else{
-						
 							for($i=0;$i<count($models2);$i++){
-								if($models2[$i]['cid']==$rowdata['pid'])
+								if($models2[$i]['category_id']==$rowdata['pid'])
 									echo "<td>{$models2[$i]['name']}</td>";
 							}
 						}
@@ -95,7 +94,7 @@ function selectRow(id) {
 						async:false,
 						success:function (data) {
 							if(data instanceof Array)
-								ids = getSelectedIds(data);		
+								ids = getSelectedIds(data,'category_id');//必须传该类的主键名
 						}
 					});
 					
@@ -104,6 +103,7 @@ function selectRow(id) {
 					$("tbody>tr").addClass('info');
 				});
 				isAll = true;
+				
 			}else{
 				ids.length = 0;
 				$(":checkbox").each(function (i) {

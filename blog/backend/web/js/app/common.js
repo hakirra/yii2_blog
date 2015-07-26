@@ -94,18 +94,18 @@ $.extend({ getUrlVars: function () {
 }); 
 
 //获取所有选中数据的ID
-function getSelectedIds(arr){
+function getSelectedIds(arr,keyname){
 	var ids = [];
 	for(var i=0;i<arr.length;i++){
-		ids.push(arr[i].id);
+		ids.push(arr[i][keyname]);
 	}
 	return ids;
 }
 
-function getSelectedId(arr){
+function getSelectedId(arr,keyname){
 	var id;
 	if(arr.length ==1){
-		id = arr[0].id;
+		id = arr[0][keyname];
 	}
 	return id;
 }

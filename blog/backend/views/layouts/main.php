@@ -23,7 +23,7 @@ AppAsset::register($this);
 </head>
 <body>
     <?php $this->beginBody() ?>
-    <div class="wrap">
+    <div class="wrap" style="">
      <!--   <?php
             NavBar::begin([
                 'brandLabel' => '后台首页',
@@ -51,7 +51,7 @@ AppAsset::register($this);
             NavBar::end();
         ?>-->
 		<header class="mui-bar mui-bar-nav" style="background-color: #438EB9;">
-			<a href="<?= Yii::$app->homeUrl?>" class="mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color: white;">简易CMS系统</a>
+			<a href="<?= Yii::$app->homeUrl?>" class="mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color: white;">简易博客系统</a>
 			<!--<h1 class="mui-title" style="color: white;">实时CAN监控</h1>-->
 			<div class="mui-pull-right"style="color: white;padding-top:10px ;">
 				<span><?=date('Y-m-d') ?></span>

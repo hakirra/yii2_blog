@@ -84,7 +84,7 @@ function selectRow(id) {
 						async:false,
 						success:function (data) {
 							if(data instanceof Array)
-								ids = getSelectedIds(data);		
+								ids = getSelectedIds(data,'id');//必须传该类的主键名		
 						}
 					});
 					

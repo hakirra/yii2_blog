@@ -5,6 +5,9 @@ function p($arr){
 	echo '</pre>';
 }
 
+function v($v){
+	var_dump($v);
+}
 
 function ShowMsg($msg, $gourl, $onlymsg=0, $limittime=0)
 {

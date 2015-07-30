@@ -14,7 +14,7 @@ use yii\data\Sort;
 class ArticleController extends \yii\web\Controller
 {
 	public $layout = 'branch';
-	const PAGESIZE = 3;
+	const PAGESIZE = 5;
 	const CACHEKEY = 'branchinfo';
 	
 	/**
@@ -22,7 +22,7 @@ class ArticleController extends \yii\web\Controller
 	 */
 	public function actionTake($offset)
 	{
-		$query = Article::find()->select("article_id,name,slug,pid,total");
+		$query = Article::find()->select("article_id");
 		$countQuery = clone $query;//必须，不然分页显示不出来
 		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
 		 $models = $query->offset($offset)
@@ -36,20 +36,35 @@ class ArticleController extends \yii\web\Controller
 	
 	public function getCatedata($id)
 	{
-		$data = Article::find()->with('category')->where(['article_id'=>$id])->asArray()->all();
-		$category = $data[0]['category'];
 		$catedatas = array();
 		$tagdatas = array();
-		$catetags = array();
-		foreach($category as $value){
-			if($value['catetags']=='category'){
-				$catedatas[$value['category_id']] = $value['name'];
-			}else{
-				$tagdatas[$value['category_id']] = $value['name'];
+		$catetags = array();		
+		$data = Article::find()->with('category')->where(['article_id'=>$id])->asArray()->all();
+		
+		if(is_array($id)){//批量删除文章
+			foreach($data as $val){
+				foreach($val['category'] as $value){
+					if($value['catetags']=='category'){
+						$catedatas[$value['category_id']] = $value['name'];
+					}else{
+						$tagdatas[$value['category_id']] = $value['name'];
+					}
+				}
+			}
+		}else{
+			$category = $data[0]['category'];
+			foreach($category as $value){
+				if($value['catetags']=='category'){
+					$catedatas[$value['category_id']] = $value['name'];
+				}else{
+					$tagdatas[$value['category_id']] = $value['name'];
+				}
 			}
 		}
+	
 		$catetags['cate'] = $catedatas;
 		$catetags['tags'] = $tagdatas;
+		
 		return $catetags;
 //		v($catetags);;exit;
 	}
@@ -120,6 +135,7 @@ class ArticleController extends \yii\web\Controller
         ->limit($pages->limit)
 		->asArray()
         ->all();
+		
 //		$cache->delete(self::CACHEKEY);	
 		$branchinfo = $cache->get(self::CACHEKEY);
       	return $this->render('index',['models'=>$models,'sort'=>$sort,'pagination'=>$pages,
@@ -150,13 +166,18 @@ class ArticleController extends \yii\web\Controller
 				//插入标签之前检测数据表中是否已存在该标签
 				$db_tags = Category::find()->select('name,category_id')->where(['catetags'=>'tags'])->asArray()->all();
 				
-				//将数据库查询得到的结果集转换成一维数组,以主键作为一维数组下班，name作为值
-				foreach ($db_tags as $value) {
-					$db_tag[$value['category_id']]=$value['name'];
-				}	
+				if($db_tags){
+					//将数据库查询得到的结果集转换成一维数组,以主键作为一维数组下班，name作为值
+					foreach ($db_tags as $value) {
+						$db_tag[$value['category_id']]=$value['name'];
+					}	
+					
+					$has_tags = array_intersect($db_tag,$post_tags);//获取数据中已存在的标签
+					$new_tags  = array_diff($post_tags, $db_tag); // 数据库中没有的标签
+				}else{
+					$new_tags = $post_tags;
+				}
 				
-				$has_tags = array_intersect($db_tag,$post_tags);//获取数据中已存在的标签
-				$new_tags  = array_diff($post_tags, $db_tag); // 数据库中没有的标签
 
 														
         		$models['article']->setAttributes([
@@ -173,6 +194,7 @@ class ArticleController extends \yii\web\Controller
 					$cache_data = $cache->get(self::CACHEKEY);
 					$cache_data['total'] += 1;
 					$cache->set(self::CACHEKEY,$cache_data);
+					
 					/**
 					 * 更新分类表中total字段的值
 					 */
@@ -214,8 +236,7 @@ class ArticleController extends \yii\web\Controller
 						}
 					}
 					
-				
-					
+
 					/**
 					 * 向article_category文章分类中间表中添加数据
 					 */
@@ -231,7 +252,9 @@ class ArticleController extends \yii\web\Controller
 					
 					
 					  return $this->redirect(['index']);			
-				}
+				}else{
+            		throw new NotFoundHttpException('文章添加失败');
+       		 }
                 
         } else {      	
         	 $arr = $this->getTree();
@@ -325,8 +348,7 @@ class ArticleController extends \yii\web\Controller
         		
         		
 				if($models['article']->save()){
-					
-					
+	
 					/**
 					 * 更新分类表
 					 */
@@ -406,8 +428,8 @@ class ArticleController extends \yii\web\Controller
 					
 					
 					  return $this->redirect(['index']);			
-				}else {
-            		throw new NotFoundHttpException('文章添加失败');
+				}else{
+            		throw new NotFoundHttpException('文章更新失败');
        		 }
                 
         } else {
@@ -426,12 +448,29 @@ class ArticleController extends \yii\web\Controller
 	
 	public function actionDelete($id)
     {
-    	/*$ids = explode(',', $id);
-		$num = Article::deleteAll(['cid'=>$ids]);
-	
-		if($num>0){
+    	$ids = explode(',', $id);
+    	$catedatas = $this->getCatedata($ids);
+		
+		$mergecates = $catedatas['cate']+$catedatas['tags'];
+			
+		$num = ArticleCategory::deleteAll(['a_id'=>$ids]);
+		
+		$num2 = Article::deleteAll(['article_id'=>$ids]);
+		
+		$cache = Yii::$app->cache;
+		if($num2){
+			$cache_data = $cache->get(self::CACHEKEY);
+			$cache_data['total'] -= $num2;
+			$cache->set(self::CACHEKEY,$cache_data);		
+		}	
+		if($num>0 &&$num2>0){
+			foreach($mergecates as $key=>$value){
+				$obj = Category::findOne($key);
+				$obj->total -= 1;
+				$obj->update();
+			}
 			ShowMsg("数据删除成功", dirname(Yii::$app->request->absoluteUrl).'/index');
-		}*/
+		}
         
     }
 

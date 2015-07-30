@@ -147,7 +147,7 @@ function selectRow(id) {
 						async:false,
 						success:function (data) {
 							if(data instanceof Array)
-								ids = getSelectedIds(data);		
+								ids = getSelectedIds(data,'article_id');		
 						}
 					});
 					
@@ -197,7 +197,7 @@ function selectRow(id) {
 			if(ids.length ==0){
 				alert('请选择要删除的数据');
 			}else{
-				var btnkey = confirm('您确定要删除选中的数据吗');
+				var btnkey = confirm('您确定要永久删除选中的数据吗');
 				if(btnkey){
 					$(this).attr('href',"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=article/delete&id='+ids);
 				}

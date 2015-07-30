@@ -56,7 +56,7 @@
 			</li>
 			</ul>
 	</div>
-	
+			
 		<iframe  id="iframe" marginwidth="0" frameborder="0" scrolling="no"  src="<?=Yii::$app->request->baseUrl.'/index.php?r=user'?>"></iframe>
 	
 <script type="text/javascript">

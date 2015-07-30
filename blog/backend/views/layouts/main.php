@@ -24,32 +24,7 @@ AppAsset::register($this);
 <body>
     <?php $this->beginBody() ?>
     <div class="wrap" style="">
-     <!--   <?php
-            NavBar::begin([
-                'brandLabel' => '后台首页',
-                'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
-                ],
-            ]);
-            $menuItems = [
-                ['label' => 'Home', 'url' => ['/site/index']],
-            ];
-            if (Yii::$app->user->isGuest) {
-                $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-            } else {
-                $menuItems[] = [
-                    'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                    'url' => ['/site/logout'],
-                    'linkOptions' => ['data-method' => 'post']
-                ];
-            }
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => $menuItems,
-            ]);
-            NavBar::end();
-        ?>-->
+
 		<header class="mui-bar mui-bar-nav" style="background-color: #438EB9;">
 			<a href="<?= Yii::$app->homeUrl?>" class="mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color: white;">简易博客系统</a>
 			<!--<h1 class="mui-title" style="color: white;">实时CAN监控</h1>-->

@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;*/
         <a id="search" class="btn btn-info" href="#">查询</a>
     </div>
   
-	<table class="table table-bordered">
+	<table class="table table-bordered table-condensed table-hover">
 		<thead>
 			<tr>
 				<th style="width: 15px;"></th>

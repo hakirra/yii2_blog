@@ -32,32 +32,34 @@ $this->params['breadcrumbs'][] = $this->title;*/
 line-height: 2;
 padding: .2em;
 text-decoration: none;}
+.tbar-ul .active{color: black;font-weight: 600 ;}
+.line{display: inline-block;height: 12px;border: 1px solid gray;vertical-align: middle;margin: 0 5px 3px 5px;}
 </style>
 <div class="category-index" ng-controller='categoryController'>
-    <!--<h1><?= Html::encode($this->title) ?></h1>-->
-    <div style="margin: 0;padding: 0;">
-        <?= Html::a('新增', ['create'], ['class' => 'btn btn-success']) ?>
-        <a id="update" class="btn btn-primary" href="#">修改</a>
-        <a id="delete" class="btn btn-danger" href="#">删除</a>
-        <!--<?= Html::a('刪除', ['delete'], ['class' => 'btn btn-danger']) ?>-->
-        <input id='input-search' class="form-control"  placeholder="请输入文章标题查询" style='display:inline-block;width:200px;'>
-        <a id="search" class="btn btn-info" href="#">查询</a>
-       
-        	<ul class="tbar-ul">
-        		<li>
-        			<strong>全部<span class="count">(<?=$branchinfo['total']?>)</span>|</strong>
-        		</li>
-        		<li>
-        			<a href="<?= Yii::$app->request->baseUrl.'/index.php?r=article&istop=1' ?>">置顶<span class="count">(<?=$branchinfo['top']?>)</span></a>|
-        		</li>
-        		<li>
-        			<a href="<?= Yii::$app->request->baseUrl.'/index.php?r=article&post_password=true'?>">私密<span class="count">(<?=$branchinfo['private']?>)</span></a>
-        		</li>
-        	</ul>
-     
-    </div>
+ 
+ 	<div style="margin: 0;padding: 0;" id="tool-bar">
+	        <?= Html::a('新增', ['create'], ['class' => 'btn btn-success']) ?>
+	        <a id="update" class="btn btn-primary" href="#">修改</a>
+	        <a id="delete" class="btn btn-danger" href="#">删除</a>
+	      
+	        <input id='input-search' class="form-control"  placeholder="请输入文章标题查询" style='display:inline-block;width:200px;'>
+	        <a id="search" class="btn btn-info" href="#">查询</a>
+	       
+	        	<ul class="tbar-ul">
+	        		<li >
+	        			<a class="<?= $class['total']?>" href="<?= Yii::$app->request->baseUrl.'/index.php?r=article' ?>">全部(<?=$branchinfo['total']?>)</a><span class="line"></span>
+	        		</li>
+	        		<li>
+	        			<a class="<?= $class['top']?>" href="<?= Yii::$app->request->baseUrl.'/index.php?r=article&istop=1' ?>">置顶(<?=$branchinfo['top']?>)</a><span class="line"></span>
+	        		</li>
+	        		<li>
+	        			<a class="<?= $class['private']?>" href="<?= Yii::$app->request->baseUrl.'/index.php?r=article&post_password=true'?>">私密(<?=$branchinfo['private']?>)</a>
+	        		</li>
+	        	</ul>
+	     
+	    </div>
   
-  		<table class="table table-condensed">
+  		<table class="table table-condensed table-hover">
 		<thead>
 			<tr>
 				<th style="width: 15px;"></th>
@@ -68,7 +70,7 @@ text-decoration: none;}
 				<th>分类目录</th>
 				<th>标签</th>
 				<th><?= $sort->link('comment')?></th>
-				<th><?= $sort->link('date')?></th>
+				<th><?= $sort->link('created')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -131,12 +133,17 @@ function selectRow(id) {
 		}
 }
 	window.onload=function () {	
+		$a = $(".tbar-ul a");
+		$a.on('click',function () {	
+			$a.removeClass('active');
+			$(this).addClass('active');		
+		});
 		var isAll;
 		$("#selectAll").click(function () {
 		
 			if(!isAll){
 					$.ajax({
-						url:"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=category/take&offset='+<?=($pagination->page)*($pagination->defaultPageSize)?>,
+						url:"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=article/take&offset='+<?=($pagination->page)*($pagination->defaultPageSize)?>,
 						async:false,
 						success:function (data) {
 							if(data instanceof Array)

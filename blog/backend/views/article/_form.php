@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 .article-form{background: #F2F2F2;}
 .tdlable{width: 60px !important;text-align: center;}
 /*.tdinput{float: left;}*/
-.tdinput>input{margin: 0 !important;}
+/*.tdinput>input{margin: 0 !important;}*/
 .left-form{width:70%;float: left;}
 .right-form{background: '';float: left;width: 28%;}
 .postbox{
@@ -36,6 +36,7 @@ padding: 0 12px 12px;
 line-height: 1.4em;
 font-size: 13px;
 }
+.comment{padding: 0 12px 6px;}
 div.checkcate{height: 24px;}
 div.checkcate input{vertical-align: middle;}
 .inside span{margin-left: 5px;display: inline-block;height: 24px;
@@ -92,25 +93,7 @@ text-overflow: ellipsis;
       <script type="text/javascript">
       	window.onload=function () {
          var ue = UE.getEditor('content',{'initialFrameHeight':'400','initialFrameWidth':'100%'});
-         	$("button[type=submit]").on('click',function () {
-         		
-         		if($("input[name='title']").val() ==''){
-         			$("#title-error").css({'display':'block','color':'red'});
-         			return false;
-         		}else{
-         			
-         			$("#title-error").css('display','none');
-         		}
-         		
-         		if(!ue.hasContents()){
-         			$("#content-error").css({'display':'block','color':'red'});
-         			return false;
-         		}
-         		
-         		$(".hidden-text").val(tagarr);
-         			
-         	});
-         /**
+             /**
           * 添加标签代码
           */
          	var tagarr = [];
@@ -119,76 +102,112 @@ text-overflow: ellipsis;
 					tagarr.remove($.trim($(this).parent().text()));
 				});
 				$(".add-btn").click(function(){
+					
+					$(".taglist span").each(function () {
+							var spantext = $.trim($(this).text());
+							tagarr.push(spantext);		
+					});
+						
 					var val = $.trim($(".tag-text").val());
 					if(val.indexOf(',')!=-1){
 						var arr = val.split(',');
 						for(var i=0;i<arr.length;i++){
-							tagarr.push(arr[i]);
-							var obj = $("<span><a ></a>"+arr[i]+"</span>");
-							$(".taglist").append(obj);
+							if(tagarr.indexOf(arr[i])<0){
+									tagarr.push(arr[i]);
+								var obj = $("<span><a ></a>"+arr[i]+"</span>");
+								$(".taglist").append(obj);
+							}				
 						}
 					}else{
-						if(tagarr.indexOf(val)==-1 && val !=''){
+					
+						
+						
+					if(tagarr.indexOf(val)==-1 && val !=''){
 							tagarr.push(val);
 							var obj = $("<span><a ></a>"+val+"</span>");
 							$(".taglist").append(obj);
 						}
-						
 					}
 					$(".tag-text").val('').focus();
 				});
+         	$("button[type=submit]").on('click',function () {
+         			
+         		if(!ue.hasContents()){
+         			$("#content-error").css({'display':'block','color':'red'});
+         			return false;
+         		}else{
+         			$("#content-error").css('display','none');
+         		}
+         		if(tagarr.length == 0){
+         				$(".taglist span").each(function () {
+							var spantext = $.trim($(this).text());
+							tagarr.push(spantext);		
+						});
+         		}
+         		
+				
+         		$(".hidden-text").val(tagarr);
+         			
+         	});
+     
       	}
   		</script>
 <div class="article-form">
+	
     <?php $form = ActiveForm::begin(); ?>
  <div class="left-form">
-  	<table class="table table-condensed">  		 
+  	<table class="table ">  		 
    		<tr>
    			<td class="tdlable"><span style="color: red;">*&nbsp;</span>标题</td>
-   			<td class="tdinput"><input type="text" name="Article[title]" /><span id="title-error" style="display: none;">标题必填</span></td>	
+   			<td class="tdinput"><?= $form->field($models['article'], 'title')->textInput()->label(false)?></td>			
    		</tr>
    	
    		<tr>
    			<td class="tdlable">关键字</td>
-   			<td class="tdinput"><input type="text" name="Article[keywords]"/>多关键词之间用空格或者“,”隔开</td>
+   			<td class="tdinput"><?= $form->field($models['article'], 'keywords')->textInput()->label(false)?>多关键词之间用空格或者“,”隔开</td>
    		</tr>
    	
    		<tr>
    			<td class="tdlable">摘要</td>
-   			<td class="tdinput"><textarea cols="10" rows="3" name="Article[excerpt]"></textarea></td>
+   			<td class="tdinput"><?= $form->field($models['article'], 'excerpt')->textarea()->label(false)?></td>
+   			<!--<textarea cols="10" rows="3" name="Article[excerpt]"></textarea>-->
    		</tr>
    		<tr>
    			<td class="tdlable"><span style="color: red;">*&nbsp;</span>内容</td>
-   			<td class="tdinput">
-   				<textarea name="Article[content]" id="content"></textarea>
-   				<span id="content-error"  style="display: none;">内容必填</span>
-   			</td>   			
+   			<td class="tdinput">	
+   					 <?= Html::activeTextarea($models['article'],'content',['id'=>'content'])?>	
+   					 <div class="help-block" id="content-error" style="display: none;">请输入文章内容</div>
+   			</td>   	
+   					
    		</tr>
 
    	</table>
  
   <div class="form-group">
-        <button type="submit" class="btn btn-success">新增</button>        
+         <?= Html::submitButton(!$cateinfo ? '新增' : '修改', ['name'=>'submit','class' => !$cateinfo ? 'btn btn-success' : 'btn btn-primary']) ?>       
         <a class="btn btn-primary" href="/backend/web/index.php?r=article%2Findex">取消</a> 
    </div>
 </div>
 <div class="right-form">
 	<div class="postbox">
 		<h3 class="hndle ui-sortable-handle"><span>分类目录</span></h3>
-		<div class="inside">
+		<div class="inside comment">
 		<?php
-			foreach($catetags as $cate){	
+			
+			foreach($catetags as $cate){
 				$strpad = str_pad('', intval($cate['level'])*18,"&nbsp;",STR_PAD_LEFT);
-			echo "<div class='checkcate'><label>{$strpad}<input type='checkbox' value={$cate['category_id']} name='post_category[]'/><span>{$cate['name']}</span></label></div>";
-							
+				if($cateinfo)
+				$checked = in_array($cate['category_id'], $cateinfo) ?'checked':'';
+				echo "<div class='checkcate'><label>{$strpad}<input type='checkbox' $checked name='post_category[]' value='{$cate["category_id"]}'><span>{$cate["name"]}</span></label></div>";		
 			}	
+
 		?>
 		</div>
 	</div>
 	<div class="postbox">
 		<h3 class="hndle ui-sortable-handle"><span>评论状态</span></h3>
-		<div class="inside">
-			<?= $form->field($models['article'], 'comment_status')->radioList(['open'=>'启用','close'=>'禁用'])?>
+		<div class="inside" style="height: 50px;line-height: 50px;">
+			<?= $form->field($models['article'], 'comment_status')->radioList(['open'=>'启用','close'=>'禁用'])->label(false)?>
 		</div>
 	</div>
 	<div class="postbox">
@@ -201,7 +220,16 @@ text-overflow: ellipsis;
 			</p>
 			
 			<p style="margin-top: -10px;margin-bottom: 0;">多个标签请用英文逗号(,)隔开</p>
-			<div class="taglist"></div>
+			<div class="taglist">
+				
+				<?php
+					if($taginfo){
+						foreach($taginfo as $value){
+							echo "<span><a ></a>{$value}</span>";
+						}
+					}
+				?>
+			</div>
 		</div>
 	</div>
 </div>

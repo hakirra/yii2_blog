@@ -17,7 +17,7 @@ AppAsset::register($this);
 <body>
     <?php $this->beginBody() ?>
     <div class="wrap" style="overflow-x: hidden;">
-  
+	  
     	 <?= $content ?>     
     </div>
       <?php $this->endBody() ?>

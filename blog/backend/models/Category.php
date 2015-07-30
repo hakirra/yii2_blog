@@ -45,8 +45,8 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             'category_id' => 'Category ID',
-            'name' => 'Name',
-            'slug' => 'Slug',
+            'name' => '名称',
+            'slug' => '别名',
             'catetags' => 'Catetags',
             'pid' => 'Pid',
             'level' => 'Level',
@@ -54,9 +54,9 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 	
-	public function getArticle()
+	/*public function getArticle()
 	{
 		return $this->hasMany(Category::className(),['category_id'=>'c_id'])
 					->viaTable('article_category',['a_id'=>'article_id']);
-	}
+	}*/
 }

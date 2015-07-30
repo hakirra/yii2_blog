@@ -13,7 +13,8 @@ use yii\widgets\ActiveForm;
 <div class="user-form">
 	
     <?php $form = ActiveForm::begin(); ?>
-	<?= $form->field($models, 'name')->textInput(['maxlength' => 255]) ?>
+	<?= $form->field($models, 'name')->textInput() ?>
+	
 	<?= $form->field($models, 'slug')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">   	

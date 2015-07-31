@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
 use yii\data\Sort;
+use yii\helpers\Url;
 class ArticleController extends \yii\web\Controller
 {
 	public $layout = 'branch';
@@ -71,6 +72,7 @@ class ArticleController extends \yii\web\Controller
 	
     public function actionIndex($title=null,$istop=null,$post_password=null)
     {
+    	
     	$sort = new Sort([
 			'attributes'=>[
 				'title'=>[
@@ -103,7 +105,8 @@ class ArticleController extends \yii\web\Controller
 				
 		
 		$cache = Yii::$app->cache;	
-		if(isset($title)){
+		if(isset($title) || $_POST['title']){
+			$title = $title ? $title : trim($_POST['title']);
 			$query = Article::find()->with('category')->where("title like '%$title%'")->orderBy($sort->orders);
 			
 			$class = array('total'=>'active','top'=>'','private'=>'');	
@@ -121,8 +124,7 @@ class ArticleController extends \yii\web\Controller
 					$branchinfo['total'] = count(Article::find()->asArray()->all());
 					$branchinfo['top'] = count(Article::find()->where(['istop'=>1])->asArray()->all());
 					$branchinfo['private'] = count(Article::find()->where("post_password != ''")->asArray()->all());			
-					
-					
+							
 					$cache->add(self::CACHEKEY,$branchinfo);
 										
 			}
@@ -162,7 +164,9 @@ class ArticleController extends \yii\web\Controller
         		$post_category = $_POST['post_category'];
 				
         		$post_tags = explode(',',$_POST['Article']['tags']);
-
+				
+				$istop = $_POST['Article']['istop'];
+				$post_password = $istop ? '' : $_POST['Article']['post_password'];
 				//插入标签之前检测数据表中是否已存在该标签
 				$db_tags = Category::find()->select('name,category_id')->where(['catetags'=>'tags'])->asArray()->all();
 				
@@ -185,16 +189,21 @@ class ArticleController extends \yii\web\Controller
         			'author_name'=>Yii::$app->user->identity->username,	
         			'created'=>time(),
         			'modified' => time(),
+        			'istop'=>$istop,
+        			'post_password'=>$post_password,
 					'post_name'=> urlencode(trim($_POST['Article']['title']))
         		],false);//如果第二个参数不给false,会要求每个字段都必须有默认值
         		
-        		
+//      		v($_POST['Article']['istop']);exit;
 				if($models['article']->save()){
 					
 					$cache_data = $cache->get(self::CACHEKEY);
 					$cache_data['total'] += 1;
-					$cache->set(self::CACHEKEY,$cache_data);
 					
+					$istop ? $cache_data['top'] +=1 : '';
+					$post_password ? $cache_data['private'] +=1 : '';
+					$cache->set(self::CACHEKEY,$cache_data);
+//					v($istop);v($cache_data['top']);v($cache_data);die;
 					/**
 					 * 更新分类表中total字段的值
 					 */
@@ -250,8 +259,8 @@ class ArticleController extends \yii\web\Controller
 							$c->save();
 						}
 					
-					
-					  return $this->redirect(['index']);			
+					ShowMsg("文章添加成功",Url::to(['article/index']));
+//					  return $this->redirect(['index']);			
 				}else{
             		throw new NotFoundHttpException('文章添加失败');
        		 }
@@ -309,11 +318,12 @@ class ArticleController extends \yii\web\Controller
   		$models['article'] = $this->findModel($id);
 		$models['category'] = new Category();	
 		$models['artcate'] = new ArticleCategory();			
-		
-
+		$dbpwd = $models['article']['post_password'];
+		$dbtop = $models['article']['istop'];
 			$tag_ids = array();//存放所有需要插入到category表中的标签数据
    		   if (isset($_POST['submit'])) {
-   		   		
+   		   		$istop = $_POST['Article']['istop'];
+				$post_password =  $istop ? '' : $_POST['Article']['post_password'];
    		   		$post_category = $_POST['post_category'];
         		$post_tags = explode(',',$_POST['Article']['tags']);
 				//插入标签之前检测数据表中是否已存在该标签
@@ -337,18 +347,31 @@ class ArticleController extends \yii\web\Controller
         		$models['article']->setAttributes([
       				'author_id'=>Yii::$app->user->id,
         			'author_name'=>Yii::$app->user->identity->username,	
-        			'modified' => date('Y-m-d H:i:s',time()),
+        			'modified' => time(),
 					'post_name'=> urlencode(trim($_POST['Article']['title'])),
 					'title'=>$_POST['Article']['title'],
 					'keywords'=>$_POST['Article']['keywords'],
 					'excerpt'=>$_POST['Article']['excerpt'],
 					'content'=>$_POST['Article']['content'],
-					'comment_status'=>$_POST['Article']['comment_status']
+					'comment_status'=>$_POST['Article']['comment_status'],
+					'post_password'=>$post_password,
+					'istop'=>(int)$istop
         		],false);//如果第二个参数不给false,会要求每个字段都必须有默认值
+//      		v($_POST['Article']['istop']);v($_POST['Article']['post_password']);exit;
         		
-        		
+//				v($istop);die;
 				if($models['article']->save()){
-	
+					
+					//更新缓存
+					$cache_data = $cache->get(self::CACHEKEY);
+					$istop ? $cache_data['top'] +=1 :'';
+					if(!$istop && $dbtop)
+						$cache_data['top'] -=1; 
+					$post_password ? $cache_data['private'] +=1 : '';
+					if(!$post_password && $dbpwd)
+						$cache_data['private'] -=1; 
+					
+					$cache->set(self::CACHEKEY,$cache_data);
 					/**
 					 * 更新分类表
 					 */
@@ -426,8 +449,8 @@ class ArticleController extends \yii\web\Controller
 								
 						}
 					
-					
-					  return $this->redirect(['index']);			
+					ShowMsg("文章更新成功", Url::to(['article/index']));
+//					  return $this->redirect(['index']);			
 				}else{
             		throw new NotFoundHttpException('文章更新失败');
        		 }
@@ -449,27 +472,34 @@ class ArticleController extends \yii\web\Controller
 	public function actionDelete($id)
     {
     	$ids = explode(',', $id);
-    	$catedatas = $this->getCatedata($ids);
-		
+    	$catedatas = $this->getCatedata($ids);	
 		$mergecates = $catedatas['cate']+$catedatas['tags'];
+		$cache = Yii::$app->cache;
+		$cache_data = $cache->get(self::CACHEKEY);
+		foreach($ids as $value){
+				$obj = Article::findOne($value);
+				$obj->istop ? $cache_data['top'] -= 1 :'';
+				$obj->post_password ? $cache_data['private'] -= 1 :'';
+			}
 			
 		$num = ArticleCategory::deleteAll(['a_id'=>$ids]);
 		
 		$num2 = Article::deleteAll(['article_id'=>$ids]);
 		
-		$cache = Yii::$app->cache;
+		
 		if($num2){
-			$cache_data = $cache->get(self::CACHEKEY);
-			$cache_data['total'] -= $num2;
+			
+			$cache_data['total'] -= $num2;	
 			$cache->set(self::CACHEKEY,$cache_data);		
 		}	
 		if($num>0 &&$num2>0){
 			foreach($mergecates as $key=>$value){
-				$obj = Category::findOne($key);
+				/*$obj = Category::findOne($key);
 				$obj->total -= 1;
-				$obj->update();
+				$obj->update();*/
+				$this->getTotal($key);
 			}
-			ShowMsg("数据删除成功", dirname(Yii::$app->request->absoluteUrl).'/index');
+			ShowMsg("数据删除成功", Url::to(['article/index']));
 		}
         
     }
@@ -502,6 +532,11 @@ class ArticleController extends \yii\web\Controller
 		return $arr;
 	}
 	
-
+	public function getTotal($id){
+		$total = ArticleCategory::find()->where(['c_id'=>$id])->count('c_id');
+		$obj = Category::findOne($id);
+		$obj->total = $total;
+		$obj->save();
+	}
 
 }

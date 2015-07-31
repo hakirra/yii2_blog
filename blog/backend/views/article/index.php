@@ -3,11 +3,8 @@
 use yii\helpers\Html;
 //use yii\grid\GridView;
 use yii\widgets\LinkPager;
-
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\search\categorySearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 /*$this->title = 'categorys';
 $this->params['breadcrumbs'][] = $this->title;*/
 //	$data = $this->context->getData();
@@ -34,6 +31,7 @@ padding: .2em;
 text-decoration: none;}
 .tbar-ul .active{color: black;font-weight: 600 ;}
 .line{display: inline-block;height: 12px;border: 1px solid gray;vertical-align: middle;margin: 0 5px 3px 5px;}
+#search-form{display: inline;vertical-align: middle;}
 </style>
 <div class="category-index" ng-controller='categoryController'>
  
@@ -41,8 +39,11 @@ text-decoration: none;}
 	        <?= Html::a('新增', ['create'], ['class' => 'btn btn-success']) ?>
 	        <a id="update" class="btn btn-primary" href="#">修改</a>
 	        <a id="delete" class="btn btn-danger" href="#">删除</a>
-	      
-	        <input id='input-search' class="form-control"  placeholder="请输入文章标题查询" style='display:inline-block;width:200px;'>
+	        <?php $form = ActiveForm::begin(['id'=>'search-form']); ?>
+	      	<!--<form action="<?=Url::to(['article/index'])?>" method="get" id="search-form">-->
+	        <input id='input-search' class="form-control"  name='title' placeholder="请输入文章标题查询" style='display:inline-block;width:200px;'>
+	        <!--</form>-->
+	        <?php ActiveForm::end(); ?>
 	        <a id="search" class="btn btn-info" href="#">查询</a>
 	       
 	        	<ul class="tbar-ul">
@@ -81,7 +82,7 @@ text-decoration: none;}
 				<td><?= ($pagination->page)*($pagination->defaultPageSize)+($key+1)?></td>
 				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['article_id']?>)"></td>
 				
-				<td><?= $rowdata['title']?></td>
+				<td><?= $rowdata['post_password']?$rowdata['title'].'&nbsp;—&nbsp;<b>密码保护</b>':$rowdata['title']?></td>
 				<td><?= $rowdata['author_name']?></td>	
 				<td>
 				<?php
@@ -205,11 +206,13 @@ function selectRow(id) {
 			}
 		});
 		
-		$("#search").click(function () {
+		$("#search").on('click',function () {
+			
 			var param = $.trim($("#input-search").val());
+			
 			$(this).attr('href',"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=article/&title='+param);
 		});
-
+		
 }
 	
 

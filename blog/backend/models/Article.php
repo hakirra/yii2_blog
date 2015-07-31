@@ -57,6 +57,10 @@ class Article extends \yii\db\ActiveRecord
 					->viaTable('article_category',['a_id'=>'article_id']);
 	}
 	
+	public function attributeLabels(){
+		return array('istop'=>'置顶');
+	}
+	
 
 	
 }

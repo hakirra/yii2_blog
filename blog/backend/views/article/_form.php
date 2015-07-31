@@ -61,9 +61,11 @@ content: '\2716';
 margin-top: -2px;
 display: block;
 text-align: center;
+speak:none;
 background: 0 0;
 color: #fff;
 }
+.taglist span a:hover{background: #CC0000;}
 .taglist{
 font-size: 12px;
 /*overflow: auto;*/
@@ -83,7 +85,13 @@ max-width: 100%;
 overflow: hidden;
 text-overflow: ellipsis;
 }
-.taglist a:hover{background: #CC0000;}
+
+.top-lock{display: inline-block;padding: 0 1px;}
+.top-lock input{vertical-align: middle;}
+.top-lock label{cursor: pointer;vertical-align: middle;height: 42px;padding-left: 6px;}
+.protect{display: none;}
+#top,#lock{cursor: default;}
+#protect-input{width: 190px;height: 34px;}
 </style>
 	 <!-- 配置文件 -->
     <script type="text/javascript" src="/backend/ueditor/ueditor.config.js"></script>
@@ -93,36 +101,40 @@ text-overflow: ellipsis;
       <script type="text/javascript">
       	window.onload=function () {
          var ue = UE.getEditor('content',{'initialFrameHeight':'400','initialFrameWidth':'100%'});
-             /**
+          /**
           * 添加标签代码
           */
          	var tagarr = [];
+         	var dbtags = [];//存放从数据库加载的标签数据
+         	//初始化dbtags数组
+     		(function () {
+				$(".taglist span").each(function () {
+					var spantext = $.trim($(this).text());
+					dbtags.push(spantext);		
+				});
+     		})();
 		        $(".taglist").delegate('a','click',function(){
 					$(this).parent().remove();
 					tagarr.remove($.trim($(this).parent().text()));
+					dbtags.remove($.trim($(this).parent().text()));
 				});
 				$(".add-btn").click(function(){
-					
-					$(".taglist span").each(function () {
-							var spantext = $.trim($(this).text());
-							tagarr.push(spantext);		
-					});
-						
+
+					if(dbtags) $.merge(tagarr,dbtags);
+
 					var val = $.trim($(".tag-text").val());
 					if(val.indexOf(',')!=-1){
 						var arr = val.split(',');
 						for(var i=0;i<arr.length;i++){
-							if(tagarr.indexOf(arr[i])<0){
+							if($.inArray(arr[i],tagarr)==-1){
 									tagarr.push(arr[i]);
 								var obj = $("<span><a ></a>"+arr[i]+"</span>");
 								$(".taglist").append(obj);
 							}				
 						}
 					}else{
-					
-						
-						
-					if(tagarr.indexOf(val)==-1 && val !=''){
+							
+						if(tagarr.indexOf(val)==-1 && val !=''){
 							tagarr.push(val);
 							var obj = $("<span><a ></a>"+val+"</span>");
 							$(".taglist").append(obj);
@@ -149,7 +161,28 @@ text-overflow: ellipsis;
          		$(".hidden-text").val(tagarr);
          			
          	});
-     
+     		
+     		//是否显示加密保护
+     		$(".lock-div,.lock").on('click',function () {
+     			if($(".protect").css('display')=='none'){
+     				$(".protect").css('display','block');
+     				$("#lock-inside").css('height','100');
+     				$(".lock-div input").attr('checked','checked');
+     			}else{
+     				$(".protect").css('display','none');
+     				$("#lock-inside").css('height','62');
+     				$(".lock-div input").removeAttr('checked');			
+     			}	
+     			$(".top-div input").removeAttr('checked');
+     		});
+     		
+     		
+     		$(".top-div,.top").on('click',function () {
+     			$(".protect").css('display','none');
+     			$("#lock-inside").css('height','62');
+     			$(".lock-div input").removeAttr('checked');
+     		});
+     	
       	}
   		</script>
 <div class="article-form">
@@ -209,6 +242,22 @@ text-overflow: ellipsis;
 		<div class="inside" style="height: 50px;line-height: 50px;">
 			<?= $form->field($models['article'], 'comment_status')->radioList(['open'=>'启用','close'=>'禁用'])->label(false)?>
 		</div>
+	</div>
+	<div class="postbox">
+		<h3 class="hndle ui-sortable-handle"><span>置顶|加密</span></h3>
+		<div class="inside" style="line-height: 50px;" id="lock-inside">
+			<div class="top-lock top-div">
+				<!--<input type="checkbox" name="Article[istop]" value="1" <?=$models['article']['istop']?'checked':''?> class="custom-checkbox" id="top">-->
+				
+				<?= Html::activeCheckbox($models['article'],'istop',['id'=>'top','labelOptions'=>['for'=>'top']])?>
+				
+				<!--<label for="top" class="top">置顶</label>-->
+			</div>
+			<div class="top-lock lock-div"><input type="checkbox"  class="custom-checkbox" id="lock"><label for="lock" class="lock">加密</label></div>
+			<div class="protect">密码保护:<?= Html::activeTextInput($models['article'],'post_password',['id'=>'protect-input','width'=>'70'])?></div>
+			<!--<input name="Article[post_password]" id="protect-input">-->
+		</div>
+		
 	</div>
 	<div class="postbox">
 		<h3 class="hndle ui-sortable-handle" style="margin-bottom: 10px;"><span>标签</span></h3>

@@ -364,10 +364,10 @@ class ArticleController extends \yii\web\Controller
 					
 					//更新缓存
 					$cache_data = $cache->get(self::CACHEKEY);
-					$istop ? $cache_data['top'] +=1 :'';
+					!$dbtop && $istop ? $cache_data['top'] +=1 :'';
 					if(!$istop && $dbtop)
 						$cache_data['top'] -=1; 
-					$post_password ? $cache_data['private'] +=1 : '';
+					!$dbpwd && $post_password ? $cache_data['private'] +=1 : '';
 					if(!$post_password && $dbpwd)
 						$cache_data['private'] -=1; 
 					

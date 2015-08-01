@@ -41,7 +41,7 @@ text-decoration: none;}
 	        <a id="delete" class="btn btn-danger" href="#">删除</a>
 	        <?php $form = ActiveForm::begin(['id'=>'search-form']); ?>
 	      	<!--<form action="<?=Url::to(['article/index'])?>" method="get" id="search-form">-->
-	        <input id='input-search' class="form-control"  name='title' placeholder="请输入文章标题查询" style='display:inline-block;width:200px;'>
+	        <input id='input-search' class="form-control"  name='title' autocomplete="off" placeholder="请输入文章标题查询" style='display:inline-block;width:200px;'>
 	        <!--</form>-->
 	        <?php ActiveForm::end(); ?>
 	        <a id="search" class="btn btn-info" href="#">查询</a>

@@ -15,7 +15,7 @@ use yii\helpers\Url;
 class ArticleController extends \yii\web\Controller
 {
 	public $layout = 'branch';
-	const PAGESIZE = 5;
+	const PAGESIZE = 3;
 	const CACHEKEY = 'branchinfo';
 	
 	/**

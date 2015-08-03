@@ -136,7 +136,7 @@ class CategoryController extends \yii\web\Controller
 			$models->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
 			$models->pid = $_POST['Category']['category_id']?$_POST['Category']['category_id']:0;
 			$models->catetags = 'category';
-			$models->total = 0;
+
 			if($models->pid==0){//等于0表示未选择父节点，新添加的为一级分类
 				$models->level = 0;
 			}else{

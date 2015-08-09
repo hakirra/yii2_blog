@@ -34,7 +34,7 @@ class UserController extends Controller
 	 */
 	public function actionTake($offset)
 	{
-		$query = User::find()->select("id,username,email,status,login_time,ip_addr")->where(['role'=>0]);
+		$query = User::find()->select("id")->where(['role'=>0]);
 		$countQuery = clone $query;//必须，不然分页显示不出来
 		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
 		 $models = $query->offset($offset)

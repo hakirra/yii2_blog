@@ -16,31 +16,9 @@ use yii\helpers\Url;
 
 class ArticleController extends \yii\web\Controller
 {
-<<<<<<< .mine
     public $layout = 'branch';
     const PAGESIZE = 2;
     const CACHEKEY = 'branchinfo';
-=======
-	public $layout = 'branch';
-	const PAGESIZE = 3;
-	const CACHEKEY = 'branchinfo';
-	
-	/**
-	 *与前端ajax交互， 给前端提供数据
-	 */
-	public function actionTake($offset)
-	{
-		$query = Article::find()->select("article_id");
-		$countQuery = clone $query;//必须，不然分页显示不出来
-		$pages = new Pagination(['totalCount' =>$countQuery->count(),'defaultPageSize' => self::PAGESIZE]);
-		 $models = $query->offset($offset)
-        ->limit($pages->limit)
-        ->all();
-		
-		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-		return $models;
-	}
->>>>>>> .r35
 
     /**
      *与前端ajax交互， 给前端提供数据

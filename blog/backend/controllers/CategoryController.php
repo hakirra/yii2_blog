@@ -118,7 +118,6 @@ class CategoryController extends \yii\web\Controller {
         $catetags = $this->getTree();
 
 //		$listdata=ArrayHelper::map($Category,'category_id','name');
-<<<<<<< .mine
 
         if (isset($_POST['submit']) && $models->validate()) {
 
@@ -146,35 +145,6 @@ class CategoryController extends \yii\web\Controller {
             return $this->render('update', [
                         'models' => $models,
                         'catetags' => $catetags
-=======
-        
-		if(isset($_POST['submit']) && $models->validate()){
-			
-			$models->name =$_POST['Category']['name'];
-			$models->slug = $_POST['Category']['slug']?strtolower(trim($_POST['Category']['slug'])):trim($_POST['Category']['name']);
-			$models->pid = $_POST['Category']['category_id']?$_POST['Category']['category_id']:0;
-			$models->catetags = 'category';
-
-			if($models->pid==0){//等于0表示未选择父节点，新添加的为一级分类
-				$models->level = 0;
-			}else{
-				$one = Category::find()->where(['category_id'=>$models->pid])->asArray()->all();
-				$models->level = $one[0]['level']+1;
-			}
-			if($models->save()){
-				
-				ShowMsg("数据更新成功", dirname(Yii::$app->request->absoluteUrl));
-			}else{
-				return $this->render('update', [
-                'models' => $models,
-                'catetags'=>$catetags
-           		 ]);
-			}		
-		}else{
-			return $this->render('update', [
-                'models' => $models,
-                'catetags'=>$catetags
->>>>>>> .r35
             ]);
         }
     }

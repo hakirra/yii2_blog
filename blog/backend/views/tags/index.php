@@ -7,16 +7,11 @@ use yii\widgets\LinkPager;
 /* @var $searchModel backend\models\search\tagsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-/*$this->title = 'tagss';
-$this->params['breadcrumbs'][] = $this->title;*/
-//	$data = $this->context->getData();
 
 ?>
-<style>
-	.orderColor{color:red;}
-</style>
+
 <div class="tags-index" ng-controller='tagsController'>
-    <!--<h1><?= Html::encode($this->title) ?></h1>-->
+
     <div style="margin: 0;padding: 0;">
         <?= Html::a('新增', ['create'], ['class' => 'btn btn-success']) ?>
         <a id="update" class="btn btn-primary" href="#">修改</a>
@@ -38,13 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;*/
 				
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="tbody">
 			
 			<?php foreach($models as $key=>$rowdata):?>
 			
-			<tr onclick="selectRow(<?= $rowdata['category_id']?>)">
+			<tr onclick="selectRow(<?= $rowdata[category_id]?>)">
 				<td><?= ($pagination->page)*($pagination->defaultPageSize)+($key+1)?></td>
-				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata['category_id']?>)"></td>
+				<td><input type="checkbox" autocomplete="off" onclick="selectRow(<?= $rowdata[category_id]?>)"></td>
 			
 				<td><?= $rowdata['name']?></td>
 				<td><?= $rowdata['slug']?></td>	
@@ -62,95 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;*/
     </div>
     
 </div>
-<script>
-var ids =[];//存放所有选中行的id
-function selectRow(id) {
-		
-		if(ids.indexOf(id) ==-1){
-			ids.push(id);
-		}else{
-			ids.remove(id);
-		}
-}
-	window.onload=function () {	
-		var isAll;
-		$("#selectAll").click(function () {
-		
-			if(!isAll){
-					$.ajax({
-						url:"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=tags/take&offset='+<?=($pagination->page)*($pagination->defaultPageSize)?>,
-						async:false,
-						success:function (data) {
-							if(data instanceof Array)
-								ids = getSelectedIds(data,'category_id');		
-						}
-					});
-					
-				$(":checkbox").each(function () {
-					$(this).prop('checked',true);
-					$("tbody>tr").addClass('info');
-				});
-				isAll = true;
-			}else{
-				ids.length = 0;
-				$(":checkbox").each(function () {
-					$(this).prop('checked',false);
-					$("tbody>tr").removeClass('info');
-				});
-				isAll = false;
-			}		
-		});//全选结束
-		
-		$("tbody input:checkbox").click(function (e) {
-			var evt = e ? e : window.event; 
-			if(evt.stopPropagation){
-				evt.stopPropagation();
-			}else{
-				evt.cancelBubble = true; 
-			}
-			$(this).parent().parent().toggleClass('info');	
-		});
-		$("tbody>tr").on('click',function () {		
-			var box = $(this).find("input:checkbox");
-			$(this).toggleClass('info');
-			box.prop('checked',!box.prop('checked'));	
-		});
-		
-		$("#update").click(function () {
-	   if(ids.length>1){
-			alert('只能选择一条数据操作');
-		}else if(ids.length ==0){
-			alert('请选中一条数据修改');
-		}else{
-			var id = ids[0];
-			$(this).attr('href',"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=tags/update&id='+id);
-		}
-	});
 
-		$("#delete").click(function () {
-			
-			if(ids.length ==0){
-				alert('请选择要删除的数据');
-			}else{
-				var btnkey = confirm('您确定要删除选中的数据吗');
-				if(btnkey){
-					$(this).attr('href',"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=tags/delete&id='+ids);
-				}
-					
-			}
-		});
-		
-		$("#search").click(function () {
-			var param = $.trim($("#input-search").val());
-			$(this).attr('href',"<?=Yii::$app->request->baseUrl.'/index.php?'?>"+'r=tags/index&name='+param);
-		});
-	
-}
-	
-
-		
-
-</script>
 	
 
 

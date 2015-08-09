@@ -21,13 +21,13 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body>
+<body style="overflow-x: hidden">
     <?php $this->beginBody() ?>
-    <div class="wrap" style="">
+    <div class="wrap">
 
 		<header class="mui-bar mui-bar-nav" style="background-color: #438EB9;">
 			<a href="<?= Yii::$app->homeUrl?>" class="mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color: white;">简易博客系统</a>
-			<!--<h1 class="mui-title" style="color: white;">实时CAN监控</h1>-->
+
 			<div class="mui-pull-right"style="color: white;padding-top:10px ;">
 				<span><?=date('Y-m-d') ?></span>
 				<a href="<?=Yii::$app->request->absoluteUrl.'?r=site/logout'?>" title="退出" style='color: white;'><span><?=Yii::$app->user->identity->username ?></span></a>
@@ -41,12 +41,7 @@ AppAsset::register($this);
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-        <p class="pull-right"><?= Yii::powered() ?></p>
-        </div>
-    </footer>
+
 
     <?php $this->endBody() ?>
 </body>

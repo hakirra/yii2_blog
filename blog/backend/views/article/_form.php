@@ -91,6 +91,7 @@ text-overflow: ellipsis;
 .top-lock label{cursor: pointer;vertical-align: middle;height: 42px;padding-left: 6px;}
 .protect{display: none;}
 #top,#lock{cursor: default;}
+#top{margin-bottom: 4px}
 #protect-input{width: 190px;height: 34px;}
 </style>
 	 <!-- 配置文件 -->
@@ -98,93 +99,8 @@ text-overflow: ellipsis;
      <!-- 编辑器源码文件 -->
     <script type="text/javascript" src="/backend/ueditor/ueditor.all.min.js"></script>
      <script type="text/javascript" src="/backend/ueditor/lang/zh-cn/zh-cn.js"></script>
-      <script type="text/javascript">
-      	window.onload=function () {
-         var ue = UE.getEditor('content',{'initialFrameHeight':'400','initialFrameWidth':'100%'});
-          /**
-          * 添加标签代码
-          */
-         	var tagarr = [];
-         	var dbtags = [];//存放从数据库加载的标签数据
-         	//初始化dbtags数组
-     		(function () {
-				$(".taglist span").each(function () {
-					var spantext = $.trim($(this).text());
-					dbtags.push(spantext);		
-				});
-     		})();
-		        $(".taglist").delegate('a','click',function(){
-					$(this).parent().remove();
-					tagarr.remove($.trim($(this).parent().text()));
-					dbtags.remove($.trim($(this).parent().text()));
-				});
-				$(".add-btn").click(function(){
+<script type="text/javascript" src="/backend/web/js/jquery1.11.js"></script>
 
-					if(dbtags) $.merge(tagarr,dbtags);
-
-					var val = $.trim($(".tag-text").val());
-					if(val.indexOf(',')!=-1){
-						var arr = val.split(',');
-						for(var i=0;i<arr.length;i++){
-							if($.inArray(arr[i],tagarr)==-1){
-									tagarr.push(arr[i]);
-								var obj = $("<span><a ></a>"+arr[i]+"</span>");
-								$(".taglist").append(obj);
-							}				
-						}
-					}else{
-							
-						if(tagarr.indexOf(val)==-1 && val !=''){
-							tagarr.push(val);
-							var obj = $("<span><a ></a>"+val+"</span>");
-							$(".taglist").append(obj);
-						}
-					}
-					$(".tag-text").val('').focus();
-				});
-         	$("button[type=submit]").on('click',function () {
-         			
-         		if(!ue.hasContents()){
-         			$("#content-error").css({'display':'block','color':'red'});
-         			return false;
-         		}else{
-         			$("#content-error").css('display','none');
-         		}
-         		if(tagarr.length == 0){
-         				$(".taglist span").each(function () {
-							var spantext = $.trim($(this).text());
-							tagarr.push(spantext);		
-						});
-         		}
-         		
-				
-         		$(".hidden-text").val(tagarr);
-         			
-         	});
-     		
-     		//是否显示加密保护
-     		$(".lock-div,.lock").on('click',function () {
-     			if($(".protect").css('display')=='none'){
-     				$(".protect").css('display','block');
-     				$("#lock-inside").css('height','100');
-     				$(".lock-div input").attr('checked','checked');
-     			}else{
-     				$(".protect").css('display','none');
-     				$("#lock-inside").css('height','62');
-     				$(".lock-div input").removeAttr('checked');			
-     			}	
-     			$(".top-div input").removeAttr('checked');
-     		});
-     		
-     		
-     		$(".top-div,.top").on('click',function () {
-     			$(".protect").css('display','none');
-     			$("#lock-inside").css('height','62');
-     			$(".lock-div input").removeAttr('checked');
-     		});
-     	
-      	}
-  		</script>
 <div class="article-form">
 	
     <?php $form = ActiveForm::begin(); ?>
@@ -286,4 +202,92 @@ text-overflow: ellipsis;
 
 </div>
 
+<script type="text/javascript">
 
+		var ue = UE.getEditor('content',{'initialFrameHeight':'400','initialFrameWidth':'100%'});
+
+
+		/**
+		 * 添加标签代码
+		 */
+		var tagarr = [];
+		var dbtags = [];//存放从数据库加载的标签数据
+		//初始化dbtags数组
+		(function () {
+			$(".taglist span").each(function () {
+				var spantext = $.trim($(this).text());
+				dbtags.push(spantext);
+			});
+		})();
+		$(".taglist").delegate('a','click',function(){
+			$(this).parent().remove();
+			tagarr.remove($.trim($(this).parent().text()));
+			dbtags.remove($.trim($(this).parent().text()));
+		});
+		$(".add-btn").click(function(){
+
+			if(dbtags) $.merge(tagarr,dbtags);
+
+			var val = $.trim($(".tag-text").val());
+			if(val.indexOf(',')!=-1){
+				var arr = val.split(',');
+				for(var i=0;i<arr.length;i++){
+					if($.inArray(arr[i],tagarr)==-1){
+						tagarr.push(arr[i]);
+						var obj = $("<span><a></a>"+arr[i]+"</span>");
+						$(".taglist").append(obj);
+					}
+				}
+			}else{
+
+				if(tagarr.indexOf(val)==-1 && val !=''){
+					tagarr.push(val);
+					var obj = $("<span><a ></a>"+val+"</span>");
+					$(".taglist").append(obj);
+				}
+			}
+			$(".tag-text").val('').focus();
+		});
+		$("button[type=submit]").on('click',function () {
+
+			if(!ue.hasContents()){
+				$("#content-error").css({'display':'block','color':'red'});
+				return false;
+			}else{
+				$("#content-error").css('display','none');
+			}
+			if(tagarr.length == 0){
+				$(".taglist span").each(function () {
+					var spantext = $.trim($(this).text());
+					tagarr.push(spantext);
+				});
+			}
+
+
+			$(".hidden-text").val(tagarr);
+
+		});
+
+		//是否显示加密保护
+		$(".lock-div,.lock").on('click',function () {
+			if($(".protect").css('display')=='none'){
+				$(".protect").css('display','block');
+				$("#lock-inside").css('height','100');
+				$(".lock-div input").attr('checked','checked');
+			}else{
+				$(".protect").css('display','none');
+				$("#lock-inside").css('height','62');
+				$(".lock-div input").removeAttr('checked');
+			}
+			$(".top-div input").removeAttr('checked');
+		});
+
+
+		$(".top-div,.top").on('click',function () {
+			$(".protect").css('display','none');
+			$("#lock-inside").css('height','62');
+			$(".lock-div input").removeAttr('checked');
+		});
+
+
+</script>

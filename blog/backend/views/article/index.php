@@ -74,7 +74,7 @@ text-decoration: none;}
 				<th><?= $sort->link('created')?></th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="tbody">
 			
 			<?php foreach($models as $key=>$rowdata):?>
 				

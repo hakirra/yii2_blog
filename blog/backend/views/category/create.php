@@ -10,7 +10,7 @@ use yii\helpers\Html;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-create">
+<div class="user-create" style="height:100%;">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

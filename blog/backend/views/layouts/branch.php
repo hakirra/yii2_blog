@@ -16,14 +16,15 @@ AppAsset::register($this);
 <body>
     <?php $this->beginBody() ?>
     <div  style="overflow-x: hidden;" id='branch'>
-
+        <?= $url = \yii\helpers\Url::to('');?>
     	 <?= $content ?>     
     </div>
       <?php $this->endBody() ?>
     <script>
         var isAll,ids =[];
-
+        console.log(ids);
         function selectRow(id) {
+
             var id = String(id);
             if($.inArray(id,ids) ==-1){
                 ids.push(id);
@@ -45,24 +46,31 @@ AppAsset::register($this);
             <?php
             $url = \yii\helpers\Url::to('');
             $url = preg_replace('/(%|&)\S*/','',$url);
+            $num = $pagination->page;
             ?>
 
-            $("#selectAll").click(function () {
 
+
+            $("#selectAll").click(function () {
+                console.log("<?= $url ?>");
                 if(!isAll){
                     $.ajax({
-                        url:"<?=$url?>"+'/take&offset='+<?=($pagination->page)*($pagination->defaultPageSize)?>,
+                        url:"<?=$url?>"+'/take&offset='+"<?=$num*($pagination->defaultPageSize)?>",
                         async:false,
                         success:function (data) {
-
+                            console.log(data);
                             if(data instanceof Array && data.length>0){
-
+                                ids.length = 0;
                                 for(var attr in data[0]){
                                     ids = getSelectedIds(data,attr);//attr是表字段主键，必须传
 //                                    break;
                                 }
                             }
 
+                        },
+                        error:function(data){
+                            console.log("error");
+                            console.log(data);
                         }
                     });
 

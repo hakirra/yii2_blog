@@ -21,6 +21,8 @@ class CategoryController extends \yii\web\Controller {
      * 与前端ajax交互， 给前端提供数据
      */
     public function actionTake($offset) {
+
+
         $query = Category::find()->select("category_id");
         $countQuery = clone $query; //必须，不然分页显示不出来
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'defaultPageSize' => self::PAGESIZE]);

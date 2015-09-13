@@ -25,10 +25,11 @@ class ArticleController extends \yii\web\Controller
      */
     public function actionTake($offset)
     {
-        $query = Article::find()->select("article_id");
+        $query = Article::find()->select("article_id")->orderBy(['created' => SORT_DESC]);
         $countQuery = clone $query;//必须，不然分页显示不出来
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'defaultPageSize' => self::PAGESIZE]);
         $models = $query->offset($offset)->limit($pages->limit)->all();
+
 
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         return $models;
@@ -106,14 +107,14 @@ class ArticleController extends \yii\web\Controller
         $cache = Yii::$app->cache;
         if (isset($title) || $_POST['title']) {
             $title = $title ? $title : trim($_POST['title']);
-            $query = Article::find()->with('category')->where("title like '%$title%'")->orderBy($sort->orders);
+            $query = Article::find()->with('category')->where("title like '%$title%'")->orderBy($sort->orders)->addOrderBy(['created' => SORT_DESC]);
 
             $class = array('total' => 'active', 'top' => '', 'private' => '');
         } elseif ($istop) {
-            $query = Article::find()->with('category')->where(['istop' => $istop])->orderBy($sort->orders);
+            $query = Article::find()->with('category')->where(['istop' => $istop])->orderBy($sort->orders)->addOrderBy(['created' => SORT_DESC]);
             $class = array('total' => '', 'top' => 'active', 'private' => '');
         } elseif ($post_password) {
-            $query = Article::find()->with('category')->where("post_password != ''")->orderBy($sort->orders);
+            $query = Article::find()->with('category')->where("post_password != ''")->orderBy($sort->orders)->addOrderBy(['created' => SORT_DESC]);
             $class = array('total' => '', 'top' => '', 'private' => 'active');
         } else {
             $class = array('total' => 'active', 'top' => '', 'private' => '');
@@ -136,6 +137,7 @@ class ArticleController extends \yii\web\Controller
             ->limit($pages->limit)
             ->asArray()
             ->all();
+
 
 //		$cache->delete(self::CACHEKEY);	
         $branchinfo = $cache->get(self::CACHEKEY);
